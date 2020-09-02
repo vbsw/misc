@@ -3,7 +3,7 @@
 [![GoDoc](https://godoc.org/github.com/vbsw/misc/ref?status.svg)](https://godoc.org/github.com/vbsw/misc/ref) [![Go Report Card](https://goreportcard.com/badge/github.com/vbsw/misc/ref)](https://goreportcard.com/report/github.com/vbsw/misc/ref) [![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
 
 ## About
-Package ref provides various unsafe functions for Go. ref is published on <https://github.com/vbsw/misc/ref>.
+This package provides various unsafe functions for Go. ref is published on <https://github.com/vbsw/misc/ref>.
 
 ## Copyright
 Copyright 2020, Vitali Baumtrok (vbsw@mailbox.org).
