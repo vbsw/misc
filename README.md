@@ -3,7 +3,7 @@
 [![GoDoc](https://godoc.org/github.com/vbsw/misc?status.svg)](https://godoc.org/github.com/vbsw/misc) [![Go Report Card](https://goreportcard.com/badge/github.com/vbsw/misc)](https://goreportcard.com/report/github.com/vbsw/misc) [![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
 
 ## About
-Package misc (miscellaneous) provides various functions fo Go. misc is published on <https://github.com/vbsw/misc>.
+Package misc (miscellaneous) provides various functions for Go. misc is published on <https://github.com/vbsw/misc>.
 
 ## Copyright
 Copyright 2020, Vitali Baumtrok (vbsw@mailbox.org).
