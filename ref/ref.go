@@ -13,12 +13,12 @@ import (
 	"unsafe"
 )
 
-// Bytes retuns the string as byte slice, but without copying the bytes.
+// Bytes returns the string as byte slice, but without copying the bytes.
 func Bytes(str string) []byte {
 	return *(*[]byte)(unsafe.Pointer(&str))
 }
 
-// String retuns the byte slice as string, but without copying the bytes.
+// String returns the byte slice as string, but without copying the bytes.
 func String(bytes []byte) string {
 	bytesHeader := (*reflect.SliceHeader)(unsafe.Pointer(&bytes))
 	strHeader := reflect.StringHeader{bytesHeader.Data, bytesHeader.Len}
