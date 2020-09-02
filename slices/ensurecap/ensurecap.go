@@ -12,1056 +12,1266 @@ import (
 	"unsafe"
 )
 
-// NewCapFunc defines a function that returns the new capacity for a slice.
-// New capacity must be greater or equal to oldCap + n.
-type NewCapFunc func(oldLen, oldCap, n int) int
+// NewCapFunc returns new capacity for a slice.
+// New capacity must be greater or equal to reqCap.
+type NewCapFunc func(oldLen, oldCap, reqCap int) int
 
-// Bool ensures capacity of list is greater or equal to len(list) + n.
-func Bool(list []bool, n int, newCap NewCapFunc) []bool {
-	if len(list) + n <= cap(list) {
+// Bool ensures capacity is greater or equal to reqCap.
+func Bool(list []bool, reqCap int, newCap NewCapFunc) []bool {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([]bool, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// BoolD2 ensures capacity of list is greater or equal to len(list) + n.
-func BoolD2(list [][]bool, index int) [][]bool {
-	if len(list) + n <= cap(list) {
+// BoolD2 ensures capacity is greater or equal to reqCap.
+func BoolD2(list [][]bool, reqCap int, newCap NewCapFunc) [][]bool {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]bool, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// BoolD3 ensures capacity of list is greater or equal to len(list) + n.
-func BoolD3(list [][][]bool, index int) [][][]bool {
-	if len(list) + n <= cap(list) {
+// BoolD3 ensures capacity is greater or equal to reqCap.
+func BoolD3(list [][][]bool, reqCap int, newCap NewCapFunc) [][][]bool {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][]bool, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([][][]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// BoolD4 ensures capacity of list is greater or equal to len(list) + n.
-func BoolD4(list [][][][]bool, index int) [][][][]bool {
-	if len(list) + n <= cap(list) {
+// BoolD4 ensures capacity is greater or equal to reqCap.
+func BoolD4(list [][][][]bool, reqCap int, newCap NewCapFunc) [][][][]bool {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][][]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]bool, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// BoolD5 ensures capacity of list is greater or equal to len(list) + n.
-func BoolD5(list [][][][][]bool, index int) [][][][][]bool {
-	if len(list) + n <= cap(list) {
+// BoolD5 ensures capacity is greater or equal to reqCap.
+func BoolD5(list [][][][][]bool, reqCap int, newCap NewCapFunc) [][][][][]bool {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][][][]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]bool, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Byte ensures capacity of list is greater or equal to len(list) + n.
-func Byte(list []byte, index int) []byte {
-	if len(list) + n <= cap(list) {
+// Byte ensures capacity is greater or equal to reqCap.
+func Byte(list []byte, reqCap int, newCap NewCapFunc) []byte {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]byte, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]byte, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// ByteD2 ensures capacity of list is greater or equal to len(list) + n.
-func ByteD2(list [][]byte, index int) [][]byte {
-	if len(list) + n <= cap(list) {
+// ByteD2 ensures capacity is greater or equal to reqCap.
+func ByteD2(list [][]byte, reqCap int, newCap NewCapFunc) [][]byte {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][]byte, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]byte, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// ByteD3 ensures capacity of list is greater or equal to len(list) + n.
-func ByteD3(list [][][]byte, index int) [][][]byte {
-	if len(list) + n <= cap(list) {
+// ByteD3 ensures capacity is greater or equal to reqCap.
+func ByteD3(list [][][]byte, reqCap int, newCap NewCapFunc) [][][]byte {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][]byte, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]byte, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// ByteD4 ensures capacity of list is greater or equal to len(list) + n.
-func ByteD4(list [][][][]byte, index int) [][][][]byte {
-	if len(list) + n <= cap(list) {
+// ByteD4 ensures capacity is greater or equal to reqCap.
+func ByteD4(list [][][][]byte, reqCap int, newCap NewCapFunc) [][][][]byte {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][]byte, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([][][][]byte, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// ByteD5 ensures capacity of list is greater or equal to len(list) + n.
-func ByteD5(list [][][][][]byte, index int) [][][][][]byte {
-	if len(list) + n <= cap(list) {
+// ByteD5 ensures capacity is greater or equal to reqCap.
+func ByteD5(list [][][][][]byte, reqCap int, newCap NewCapFunc) [][][][][]byte {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][][][]byte, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]byte, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Complex64 ensures capacity of list is greater or equal to len(list) + n.
-func Complex64(list []complex64, index int) []complex64 {
-	if len(list) + n <= cap(list) {
+// Complex64 ensures capacity is greater or equal to reqCap.
+func Complex64(list []complex64, reqCap int, newCap NewCapFunc) []complex64 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]complex64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]complex64, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Complex64D2 ensures capacity of list is greater or equal to len(list) + n.
-func Complex64D2(list [][]complex64, index int) [][]complex64 {
-	if len(list) + n <= cap(list) {
+// Complex64D2 ensures capacity is greater or equal to reqCap.
+func Complex64D2(list [][]complex64, reqCap int, newCap NewCapFunc) [][]complex64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][]complex64, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]complex64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Complex64D3 ensures capacity of list is greater or equal to len(list) + n.
-func Complex64D3(list [][][]complex64, index int) [][][]complex64 {
-	if len(list) + n <= cap(list) {
+// Complex64D3 ensures capacity is greater or equal to reqCap.
+func Complex64D3(list [][][]complex64, reqCap int, newCap NewCapFunc) [][][]complex64 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][]complex64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([][][]complex64, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Complex64D4 ensures capacity of list is greater or equal to len(list) + n.
-func Complex64D4(list [][][][]complex64, index int) [][][][]complex64 {
-	if len(list) + n <= cap(list) {
+// Complex64D4 ensures capacity is greater or equal to reqCap.
+func Complex64D4(list [][][][]complex64, reqCap int, newCap NewCapFunc) [][][][]complex64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][][]complex64, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]complex64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Complex64D5 ensures capacity of list is greater or equal to len(list) + n.
-func Complex64D5(list [][][][][]complex64, index int) [][][][][]complex64 {
-	if len(list) + n <= cap(list) {
+// Complex64D5 ensures capacity is greater or equal to reqCap.
+func Complex64D5(list [][][][][]complex64, reqCap int, newCap NewCapFunc) [][][][][]complex64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][][][]complex64, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]complex64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Complex128 ensures capacity of list is greater or equal to len(list) + n.
-func Complex128(list []complex128, index int) []complex128 {
-	if len(list) + n <= cap(list) {
+// Complex128 ensures capacity is greater or equal to reqCap.
+func Complex128(list []complex128, reqCap int, newCap NewCapFunc) []complex128 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]complex128, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]complex128, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Complex128D2 ensures capacity of list is greater or equal to len(list) + n.
-func Complex128D2(list [][]complex128, index int) [][]complex128 {
-	if len(list) + n <= cap(list) {
+// Complex128D2 ensures capacity is greater or equal to reqCap.
+func Complex128D2(list [][]complex128, reqCap int, newCap NewCapFunc) [][]complex128 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][]complex128, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]complex128, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Complex128D3 ensures capacity of list is greater or equal to len(list) + n.
-func Complex128D3(list [][][]complex128, index int) [][][]complex128 {
-	if len(list) + n <= cap(list) {
+// Complex128D3 ensures capacity is greater or equal to reqCap.
+func Complex128D3(list [][][]complex128, reqCap int, newCap NewCapFunc) [][][]complex128 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][]complex128, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]complex128, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Complex128D4 ensures capacity of list is greater or equal to len(list) + n.
-func Complex128D4(list [][][][]complex128, index int) [][][][]complex128 {
-	if len(list) + n <= cap(list) {
+// Complex128D4 ensures capacity is greater or equal to reqCap.
+func Complex128D4(list [][][][]complex128, reqCap int, newCap NewCapFunc) [][][][]complex128 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][]complex128, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([][][][]complex128, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Complex128D5 ensures capacity of list is greater or equal to len(list) + n.
-func Complex128D5(list [][][][][]complex128, index int) [][][][][]complex128 {
-	if len(list) + n <= cap(list) {
+// Complex128D5 ensures capacity is greater or equal to reqCap.
+func Complex128D5(list [][][][][]complex128, reqCap int, newCap NewCapFunc) [][][][][]complex128 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][][][]complex128, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]complex128, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Error ensures capacity of list is greater or equal to len(list) + n.
-func Error(list []error, index int) []error {
-	if len(list) + n <= cap(list) {
+// Error ensures capacity is greater or equal to reqCap.
+func Error(list []error, reqCap int, newCap NewCapFunc) []error {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]error, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([]error, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// ErrorD2 ensures capacity of list is greater or equal to len(list) + n.
-func ErrorD2(list [][]error, index int) [][]error {
-	if len(list) + n <= cap(list) {
+// ErrorD2 ensures capacity is greater or equal to reqCap.
+func ErrorD2(list [][]error, reqCap int, newCap NewCapFunc) [][]error {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][]error, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([][]error, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// ErrorD3 ensures capacity of list is greater or equal to len(list) + n.
-func ErrorD3(list [][][]error, index int) [][][]error {
-	if len(list) + n <= cap(list) {
+// ErrorD3 ensures capacity is greater or equal to reqCap.
+func ErrorD3(list [][][]error, reqCap int, newCap NewCapFunc) [][][]error {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][]error, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]error, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// ErrorD4 ensures capacity of list is greater or equal to len(list) + n.
-func ErrorD4(list [][][][]error, index int) [][][][]error {
-	if len(list) + n <= cap(list) {
+// ErrorD4 ensures capacity is greater or equal to reqCap.
+func ErrorD4(list [][][][]error, reqCap int, newCap NewCapFunc) [][][][]error {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][]error, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([][][][]error, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// ErrorD5 ensures capacity of list is greater or equal to len(list) + n.
-func ErrorD5(list [][][][][]error, index int) [][][][][]error {
-	if len(list) + n <= cap(list) {
+// ErrorD5 ensures capacity is greater or equal to reqCap.
+func ErrorD5(list [][][][][]error, reqCap int, newCap NewCapFunc) [][][][][]error {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][][][]error, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]error, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Float32 ensures capacity of list is greater or equal to len(list) + n.
-func Float32(list []float32, index int) []float32 {
-	if len(list) + n <= cap(list) {
+// Float32 ensures capacity is greater or equal to reqCap.
+func Float32(list []float32, reqCap int, newCap NewCapFunc) []float32 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]float32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]float32, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Float32D2 ensures capacity of list is greater or equal to len(list) + n.
-func Float32D2(list [][]float32, index int) [][]float32 {
-	if len(list) + n <= cap(list) {
+// Float32D2 ensures capacity is greater or equal to reqCap.
+func Float32D2(list [][]float32, reqCap int, newCap NewCapFunc) [][]float32 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][]float32, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]float32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Float32D3 ensures capacity of list is greater or equal to len(list) + n.
-func Float32D3(list [][][]float32, index int) [][][]float32 {
-	if len(list) + n <= cap(list) {
+// Float32D3 ensures capacity is greater or equal to reqCap.
+func Float32D3(list [][][]float32, reqCap int, newCap NewCapFunc) [][][]float32 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([][][]float32, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]float32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Float32D4 ensures capacity of list is greater or equal to len(list) + n.
-func Float32D4(list [][][][]float32, index int) [][][][]float32 {
-	if len(list) + n <= cap(list) {
+// Float32D4 ensures capacity is greater or equal to reqCap.
+func Float32D4(list [][][][]float32, reqCap int, newCap NewCapFunc) [][][][]float32 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][]float32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Float32D5 ensures capacity of list is greater or equal to len(list) + n.
-func Float32D5(list [][][][][]float32, index int) [][][][][]float32 {
-	if len(list) + n <= cap(list) {
+// Float32D5 ensures capacity is greater or equal to reqCap.
+func Float32D5(list [][][][][]float32, reqCap int, newCap NewCapFunc) [][][][][]float32 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]float32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Float64 ensures capacity of list is greater or equal to len(list) + n.
-func Float64(list []float64, index int) []float64 {
-	if len(list) + n <= cap(list) {
+// Float64 ensures capacity is greater or equal to reqCap.
+func Float64(list []float64, reqCap int, newCap NewCapFunc) []float64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([]float64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Float64D2 ensures capacity of list is greater or equal to len(list) + n.
-func Float64D2(list [][]float64, index int) [][]float64 {
-	if len(list) + n <= cap(list) {
+// Float64D2 ensures capacity is greater or equal to reqCap.
+func Float64D2(list [][]float64, reqCap int, newCap NewCapFunc) [][]float64 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][]float64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Float64D3 ensures capacity of list is greater or equal to len(list) + n.
-func Float64D3(list [][][]float64, index int) [][][]float64 {
-	if len(list) + n <= cap(list) {
+// Float64D3 ensures capacity is greater or equal to reqCap.
+func Float64D3(list [][][]float64, reqCap int, newCap NewCapFunc) [][][]float64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]float64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Float64D4 ensures capacity of list is greater or equal to len(list) + n.
-func Float64D4(list [][][][]float64, index int) [][][][]float64 {
-	if len(list) + n <= cap(list) {
+// Float64D4 ensures capacity is greater or equal to reqCap.
+func Float64D4(list [][][][]float64, reqCap int, newCap NewCapFunc) [][][][]float64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]float64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Float64D5 ensures capacity of list is greater or equal to len(list) + n.
-func Float64D5(list [][][][][]float64, index int) [][][][][]float64 {
-	if len(list) + n <= cap(list) {
+// Float64D5 ensures capacity is greater or equal to reqCap.
+func Float64D5(list [][][][][]float64, reqCap int, newCap NewCapFunc) [][][][][]float64 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][][]float64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Int ensures capacity of list is greater or equal to len(list) + n.
-func Int(list []int, index int) []int {
-	if len(list) + n <= cap(list) {
+// Int ensures capacity is greater or equal to reqCap.
+func Int(list []int, reqCap int, newCap NewCapFunc) []int {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([]int, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// IntD2 ensures capacity of list is greater or equal to len(list) + n.
-func IntD2(list [][]int, index int) [][]int {
-	if len(list) + n <= cap(list) {
+// IntD2 ensures capacity is greater or equal to reqCap.
+func IntD2(list [][]int, reqCap int, newCap NewCapFunc) [][]int {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][]int, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// IntD3 ensures capacity of list is greater or equal to len(list) + n.
-func IntD3(list [][][]int, index int) [][][]int {
-	if len(list) + n <= cap(list) {
+// IntD3 ensures capacity is greater or equal to reqCap.
+func IntD3(list [][][]int, reqCap int, newCap NewCapFunc) [][][]int {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]int, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// IntD4 ensures capacity of list is greater or equal to len(list) + n.
-func IntD4(list [][][][]int, index int) [][][][]int {
-	if len(list) + n <= cap(list) {
+// IntD4 ensures capacity is greater or equal to reqCap.
+func IntD4(list [][][][]int, reqCap int, newCap NewCapFunc) [][][][]int {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][]int, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// IntD5 ensures capacity of list is greater or equal to len(list) + n.
-func IntD5(list [][][][][]int, index int) [][][][][]int {
-	if len(list) + n <= cap(list) {
+// IntD5 ensures capacity is greater or equal to reqCap.
+func IntD5(list [][][][][]int, reqCap int, newCap NewCapFunc) [][][][][]int {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]int, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int8 ensures capacity of list is greater or equal to len(list) + n.
-func Int8(list []int8, index int) []int8 {
-	if len(list) + n <= cap(list) {
+// Int8 ensures capacity is greater or equal to reqCap.
+func Int8(list []int8, reqCap int, newCap NewCapFunc) []int8 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([]int8, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int8D2 ensures capacity of list is greater or equal to len(list) + n.
-func Int8D2(list [][]int8, index int) [][]int8 {
-	if len(list) + n <= cap(list) {
+// Int8D2 ensures capacity is greater or equal to reqCap.
+func Int8D2(list [][]int8, reqCap int, newCap NewCapFunc) [][]int8 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][]int8, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Int8D3 ensures capacity of list is greater or equal to len(list) + n.
-func Int8D3(list [][][]int8, index int) [][][]int8 {
-	if len(list) + n <= cap(list) {
+// Int8D3 ensures capacity is greater or equal to reqCap.
+func Int8D3(list [][][]int8, reqCap int, newCap NewCapFunc) [][][]int8 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]int8, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int8D4 ensures capacity of list is greater or equal to len(list) + n.
-func Int8D4(list [][][][]int8, index int) [][][][]int8 {
-	if len(list) + n <= cap(list) {
+// Int8D4 ensures capacity is greater or equal to reqCap.
+func Int8D4(list [][][][]int8, reqCap int, newCap NewCapFunc) [][][][]int8 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]int8, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int8D5 ensures capacity of list is greater or equal to len(list) + n.
-func Int8D5(list [][][][][]int8, index int) [][][][][]int8 {
-	if len(list) + n <= cap(list) {
+// Int8D5 ensures capacity is greater or equal to reqCap.
+func Int8D5(list [][][][][]int8, reqCap int, newCap NewCapFunc) [][][][][]int8 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][][]int8, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Int16 ensures capacity of list is greater or equal to len(list) + n.
-func Int16(list []int16, index int) []int16 {
-	if len(list) + n <= cap(list) {
+// Int16 ensures capacity is greater or equal to reqCap.
+func Int16(list []int16, reqCap int, newCap NewCapFunc) []int16 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([]int16, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int16D2 ensures capacity of list is greater or equal to len(list) + n.
-func Int16D2(list [][]int16, index int) [][]int16 {
-	if len(list) + n <= cap(list) {
+// Int16D2 ensures capacity is greater or equal to reqCap.
+func Int16D2(list [][]int16, reqCap int, newCap NewCapFunc) [][]int16 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]int16, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int16D3 ensures capacity of list is greater or equal to len(list) + n.
-func Int16D3(list [][][]int16, index int) [][][]int16 {
-	if len(list) + n <= cap(list) {
+// Int16D3 ensures capacity is greater or equal to reqCap.
+func Int16D3(list [][][]int16, reqCap int, newCap NewCapFunc) [][][]int16 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][]int16, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Int16D4 ensures capacity of list is greater or equal to len(list) + n.
-func Int16D4(list [][][][]int16, index int) [][][][]int16 {
-	if len(list) + n <= cap(list) {
+// Int16D4 ensures capacity is greater or equal to reqCap.
+func Int16D4(list [][][][]int16, reqCap int, newCap NewCapFunc) [][][][]int16 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]int16, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int16D5 ensures capacity of list is greater or equal to len(list) + n.
-func Int16D5(list [][][][][]int16, index int) [][][][][]int16 {
-	if len(list) + n <= cap(list) {
+// Int16D5 ensures capacity is greater or equal to reqCap.
+func Int16D5(list [][][][][]int16, reqCap int, newCap NewCapFunc) [][][][][]int16 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][][]int16, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Int32 ensures capacity of list is greater or equal to len(list) + n.
-func Int32(list []int32, index int) []int32 {
-	if len(list) + n <= cap(list) {
+// Int32 ensures capacity is greater or equal to reqCap.
+func Int32(list []int32, reqCap int, newCap NewCapFunc) []int32 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([]int32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int32D2 ensures capacity of list is greater or equal to len(list) + n.
-func Int32D2(list [][]int32, index int) [][]int32 {
-	if len(list) + n <= cap(list) {
+// Int32D2 ensures capacity is greater or equal to reqCap.
+func Int32D2(list [][]int32, reqCap int, newCap NewCapFunc) [][]int32 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][]int32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Int32D3 ensures capacity of list is greater or equal to len(list) + n.
-func Int32D3(list [][][]int32, index int) [][][]int32 {
-	if len(list) + n <= cap(list) {
+// Int32D3 ensures capacity is greater or equal to reqCap.
+func Int32D3(list [][][]int32, reqCap int, newCap NewCapFunc) [][][]int32 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]int32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int32D4 ensures capacity of list is greater or equal to len(list) + n.
-func Int32D4(list [][][][]int32, index int) [][][][]int32 {
-	if len(list) + n <= cap(list) {
+// Int32D4 ensures capacity is greater or equal to reqCap.
+func Int32D4(list [][][][]int32, reqCap int, newCap NewCapFunc) [][][][]int32 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]int32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int32D5 ensures capacity of list is greater or equal to len(list) + n.
-func Int32D5(list [][][][][]int32, index int) [][][][][]int32 {
-	if len(list) + n <= cap(list) {
+// Int32D5 ensures capacity is greater or equal to reqCap.
+func Int32D5(list [][][][][]int32, reqCap int, newCap NewCapFunc) [][][][][]int32 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][][]int32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Int64 ensures capacity of list is greater or equal to len(list) + n.
-func Int64(list []int64, index int) []int64 {
-	if len(list) + n <= cap(list) {
+// Int64 ensures capacity is greater or equal to reqCap.
+func Int64(list []int64, reqCap int, newCap NewCapFunc) []int64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([]int64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int64D2 ensures capacity of list is greater or equal to len(list) + n.
-func Int64D2(list [][]int64, index int) [][]int64 {
-	if len(list) + n <= cap(list) {
+// Int64D2 ensures capacity is greater or equal to reqCap.
+func Int64D2(list [][]int64, reqCap int, newCap NewCapFunc) [][]int64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]int64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int64D3 ensures capacity of list is greater or equal to len(list) + n.
-func Int64D3(list [][][]int64, index int) [][][]int64 {
-	if len(list) + n <= cap(list) {
+// Int64D3 ensures capacity is greater or equal to reqCap.
+func Int64D3(list [][][]int64, reqCap int, newCap NewCapFunc) [][][]int64 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][]int64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Int64D4 ensures capacity of list is greater or equal to len(list) + n.
-func Int64D4(list [][][][]int64, index int) [][][][]int64 {
-	if len(list) + n <= cap(list) {
+// Int64D4 ensures capacity is greater or equal to reqCap.
+func Int64D4(list [][][][]int64, reqCap int, newCap NewCapFunc) [][][][]int64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]int64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Int64D5 ensures capacity of list is greater or equal to len(list) + n.
-func Int64D5(list [][][][][]int64, index int) [][][][][]int64 {
-	if len(list) + n <= cap(list) {
+// Int64D5 ensures capacity is greater or equal to reqCap.
+func Int64D5(list [][][][][]int64, reqCap int, newCap NewCapFunc) [][][][][]int64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]int64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Interface ensures capacity of list is greater or equal to len(list) + n.
-func Interface(list []interface{}, index int) []interface{} {
-	if len(list) + n <= cap(list) {
+// Interface ensures capacity is greater or equal to reqCap.
+func Interface(list []interface{}, reqCap int, newCap NewCapFunc) []interface{} {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]interface{}, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// InterfaceD2 ensures capacity of list is greater or equal to len(list) + n.
-func InterfaceD2(list [][]interface{}, index int) [][]interface{} {
-	if len(list) + n <= cap(list) {
+// InterfaceD2 ensures capacity is greater or equal to reqCap.
+func InterfaceD2(list [][]interface{}, reqCap int, newCap NewCapFunc) [][]interface{} {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]interface{}, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// InterfaceD3 ensures capacity of list is greater or equal to len(list) + n.
-func InterfaceD3(list [][][]interface{}, index int) [][][]interface{} {
-	if len(list) + n <= cap(list) {
+// InterfaceD3 ensures capacity is greater or equal to reqCap.
+func InterfaceD3(list [][][]interface{}, reqCap int, newCap NewCapFunc) [][][]interface{} {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][]interface{}, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// InterfaceD4 ensures capacity of list is greater or equal to len(list) + n.
-func InterfaceD4(list [][][][]interface{}, index int) [][][][]interface{} {
-	if len(list) + n <= cap(list) {
+// InterfaceD4 ensures capacity is greater or equal to reqCap.
+func InterfaceD4(list [][][][]interface{}, reqCap int, newCap NewCapFunc) [][][][]interface{} {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]interface{}, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// InterfaceD5 ensures capacity of list is greater or equal to len(list) + n.
-func InterfaceD5(list [][][][][]interface{}, index int) [][][][][]interface{} {
-	if len(list) + n <= cap(list) {
+// InterfaceD5 ensures capacity is greater or equal to reqCap.
+func InterfaceD5(list [][][][][]interface{}, reqCap int, newCap NewCapFunc) [][][][][]interface{} {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][][]interface{}, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// Pointer ensures capacity of list is greater or equal to len(list) + n.
-func Pointer(list []unsafe.Pointer, index int) []unsafe.Pointer {
-	if len(list) + n <= cap(list) {
+// Pointer ensures capacity is greater or equal to reqCap.
+func Pointer(list []unsafe.Pointer, reqCap int, newCap NewCapFunc) []unsafe.Pointer {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([]unsafe.Pointer, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// PointerD2 ensures capacity of list is greater or equal to len(list) + n.
-func PointerD2(list [][]unsafe.Pointer, index int) [][]unsafe.Pointer {
-	if len(list) + n <= cap(list) {
+// PointerD2 ensures capacity is greater or equal to reqCap.
+func PointerD2(list [][]unsafe.Pointer, reqCap int, newCap NewCapFunc) [][]unsafe.Pointer {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]unsafe.Pointer, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// PointerD3 ensures capacity of list is greater or equal to len(list) + n.
-func PointerD3(list [][][]unsafe.Pointer, index int) [][][]unsafe.Pointer {
-	if len(list) + n <= cap(list) {
+// PointerD3 ensures capacity is greater or equal to reqCap.
+func PointerD3(list [][][]unsafe.Pointer, reqCap int, newCap NewCapFunc) [][][]unsafe.Pointer {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][]unsafe.Pointer, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// PointerD4 ensures capacity of list is greater or equal to len(list) + n.
-func PointerD4(list [][][][]unsafe.Pointer, index int) [][][][]unsafe.Pointer {
-	if len(list) + n <= cap(list) {
+// PointerD4 ensures capacity is greater or equal to reqCap.
+func PointerD4(list [][][][]unsafe.Pointer, reqCap int, newCap NewCapFunc) [][][][]unsafe.Pointer {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]unsafe.Pointer, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// PointerD5 ensures capacity of list is greater or equal to len(list) + n.
-func PointerD5(list [][][][][]unsafe.Pointer, index int) [][][][][]unsafe.Pointer {
-	if len(list) + n <= cap(list) {
+// PointerD5 ensures capacity is greater or equal to reqCap.
+func PointerD5(list [][][][][]unsafe.Pointer, reqCap int, newCap NewCapFunc) [][][][][]unsafe.Pointer {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]unsafe.Pointer, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// Rune ensures capacity of list is greater or equal to len(list) + n.
-func Rune(list []rune, index int) []rune {
-	if len(list) + n <= cap(list) {
+// Rune ensures capacity is greater or equal to reqCap.
+func Rune(list []rune, reqCap int, newCap NewCapFunc) []rune {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]rune, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// RuneD2 ensures capacity of list is greater or equal to len(list) + n.
-func RuneD2(list [][]rune, index int) [][]rune {
-	if len(list) + n <= cap(list) {
+// RuneD2 ensures capacity is greater or equal to reqCap.
+func RuneD2(list [][]rune, reqCap int, newCap NewCapFunc) [][]rune {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]rune, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// RuneD3 ensures capacity of list is greater or equal to len(list) + n.
-func RuneD3(list [][][]rune, index int) [][][]rune {
-	if len(list) + n <= cap(list) {
+// RuneD3 ensures capacity is greater or equal to reqCap.
+func RuneD3(list [][][]rune, reqCap int, newCap NewCapFunc) [][][]rune {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]rune, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// RuneD4 ensures capacity of list is greater or equal to len(list) + n.
-func RuneD4(list [][][][]rune, index int) [][][][]rune {
-	if len(list) + n <= cap(list) {
+// RuneD4 ensures capacity is greater or equal to reqCap.
+func RuneD4(list [][][][]rune, reqCap int, newCap NewCapFunc) [][][][]rune {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][]rune, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// RuneD5 ensures capacity of list is greater or equal to len(list) + n.
-func RuneD5(list [][][][][]rune, index int) [][][][][]rune {
-	if len(list) + n <= cap(list) {
+// RuneD5 ensures capacity is greater or equal to reqCap.
+func RuneD5(list [][][][][]rune, reqCap int, newCap NewCapFunc) [][][][][]rune {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]rune, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// String ensures capacity of list is greater or equal to len(list) + n.
-func String(list []string, index int) []string {
-	if len(list) + n <= cap(list) {
+// String ensures capacity is greater or equal to reqCap.
+func String(list []string, reqCap int, newCap NewCapFunc) []string {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]string, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// StringD2 ensures capacity of list is greater or equal to len(list) + n.
-func StringD2(list [][]string, index int) [][]string {
-	if len(list) + n <= cap(list) {
+// StringD2 ensures capacity is greater or equal to reqCap.
+func StringD2(list [][]string, reqCap int, newCap NewCapFunc) [][]string {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]string, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// StringD3 ensures capacity of list is greater or equal to len(list) + n.
-func StringD3(list [][][]string, index int) [][][]string {
-	if len(list) + n <= cap(list) {
+// StringD3 ensures capacity is greater or equal to reqCap.
+func StringD3(list [][][]string, reqCap int, newCap NewCapFunc) [][][]string {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][]string, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// StringD4 ensures capacity of list is greater or equal to len(list) + n.
-func StringD4(list [][][][]string, index int) [][][][]string {
-	if len(list) + n <= cap(list) {
+// StringD4 ensures capacity is greater or equal to reqCap.
+func StringD4(list [][][][]string, reqCap int, newCap NewCapFunc) [][][][]string {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]string, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// StringD5 ensures capacity of list is greater or equal to len(list) + n.
-func StringD5(list [][][][][]string, index int) [][][][][]string {
-	if len(list) + n <= cap(list) {
+// StringD5 ensures capacity is greater or equal to reqCap.
+func StringD5(list [][][][][]string, reqCap int, newCap NewCapFunc) [][][][][]string {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]string, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt ensures capacity of list is greater or equal to len(list) + n.
-func UInt(list []uint, index int) []uint {
-	if len(list) + n <= cap(list) {
+// UInt ensures capacity is greater or equal to reqCap.
+func UInt(list []uint, reqCap int, newCap NewCapFunc) []uint {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]uint, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// UIntD2 ensures capacity of list is greater or equal to len(list) + n.
-func UIntD2(list [][]uint, index int) [][]uint {
-	if len(list) + n <= cap(list) {
+// UIntD2 ensures capacity is greater or equal to reqCap.
+func UIntD2(list [][]uint, reqCap int, newCap NewCapFunc) [][]uint {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]uint, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UIntD3 ensures capacity of list is greater or equal to len(list) + n.
-func UIntD3(list [][][]uint, index int) [][][]uint {
-	if len(list) + n <= cap(list) {
+// UIntD3 ensures capacity is greater or equal to reqCap.
+func UIntD3(list [][][]uint, reqCap int, newCap NewCapFunc) [][][]uint {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]uint, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UIntD4 ensures capacity of list is greater or equal to len(list) + n.
-func UIntD4(list [][][][]uint, index int) [][][][]uint {
-	if len(list) + n <= cap(list) {
+// UIntD4 ensures capacity is greater or equal to reqCap.
+func UIntD4(list [][][][]uint, reqCap int, newCap NewCapFunc) [][][][]uint {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][]uint, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// UIntD5 ensures capacity of list is greater or equal to len(list) + n.
-func UIntD5(list [][][][][]uint, index int) [][][][][]uint {
-	if len(list) + n <= cap(list) {
+// UIntD5 ensures capacity is greater or equal to reqCap.
+func UIntD5(list [][][][][]uint, reqCap int, newCap NewCapFunc) [][][][][]uint {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]uint, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt8 ensures capacity of list is greater or equal to len(list) + n.
-func UInt8(list []uint8, index int) []uint8 {
-	if len(list) + n <= cap(list) {
+// UInt8 ensures capacity is greater or equal to reqCap.
+func UInt8(list []uint8, reqCap int, newCap NewCapFunc) []uint8 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([]uint8, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt8D2 ensures capacity of list is greater or equal to len(list) + n.
-func UInt8D2(list [][]uint8, index int) [][]uint8 {
-	if len(list) + n <= cap(list) {
+// UInt8D2 ensures capacity is greater or equal to reqCap.
+func UInt8D2(list [][]uint8, reqCap int, newCap NewCapFunc) [][]uint8 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][]uint8, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// UInt8D3 ensures capacity of list is greater or equal to len(list) + n.
-func UInt8D3(list [][][]uint8, index int) [][][]uint8 {
-	if len(list) + n <= cap(list) {
+// UInt8D3 ensures capacity is greater or equal to reqCap.
+func UInt8D3(list [][][]uint8, reqCap int, newCap NewCapFunc) [][][]uint8 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]uint8, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt8D4 ensures capacity of list is greater or equal to len(list) + n.
-func UInt8D4(list [][][][]uint8, index int) [][][][]uint8 {
-	if len(list) + n <= cap(list) {
+// UInt8D4 ensures capacity is greater or equal to reqCap.
+func UInt8D4(list [][][][]uint8, reqCap int, newCap NewCapFunc) [][][][]uint8 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][]uint8, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// UInt8D5 ensures capacity of list is greater or equal to len(list) + n.
-func UInt8D5(list [][][][][]uint8, index int) [][][][][]uint8 {
-	if len(list) + n <= cap(list) {
+// UInt8D5 ensures capacity is greater or equal to reqCap.
+func UInt8D5(list [][][][][]uint8, reqCap int, newCap NewCapFunc) [][][][][]uint8 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]uint8, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt16 ensures capacity of list is greater or equal to len(list) + n.
-func UInt16(list []uint16, index int) []uint16 {
-	if len(list) + n <= cap(list) {
+// UInt16 ensures capacity is greater or equal to reqCap.
+func UInt16(list []uint16, reqCap int, newCap NewCapFunc) []uint16 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]uint16, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// UInt16D2 ensures capacity of list is greater or equal to len(list) + n.
-func UInt16D2(list [][]uint16, index int) [][]uint16 {
-	if len(list) + n <= cap(list) {
+// UInt16D2 ensures capacity is greater or equal to reqCap.
+func UInt16D2(list [][]uint16, reqCap int, newCap NewCapFunc) [][]uint16 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]uint16, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt16D3 ensures capacity of list is greater or equal to len(list) + n.
-func UInt16D3(list [][][]uint16, index int) [][][]uint16 {
-	if len(list) + n <= cap(list) {
+// UInt16D3 ensures capacity is greater or equal to reqCap.
+func UInt16D3(list [][][]uint16, reqCap int, newCap NewCapFunc) [][][]uint16 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][]uint16, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt16D4 ensures capacity of list is greater or equal to len(list) + n.
-func UInt16D4(list [][][][]uint16, index int) [][][][]uint16 {
-	if len(list) + n <= cap(list) {
+// UInt16D4 ensures capacity is greater or equal to reqCap.
+func UInt16D4(list [][][][]uint16, reqCap int, newCap NewCapFunc) [][][][]uint16 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][]uint16, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// UInt16D5 ensures capacity of list is greater or equal to len(list) + n.
-func UInt16D5(list [][][][][]uint16, index int) [][][][][]uint16 {
-	if len(list) + n <= cap(list) {
+// UInt16D5 ensures capacity is greater or equal to reqCap.
+func UInt16D5(list [][][][][]uint16, reqCap int, newCap NewCapFunc) [][][][][]uint16 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]uint16, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt32 ensures capacity of list is greater or equal to len(list) + n.
-func UInt32(list []uint32, index int) []uint32 {
-	if len(list) + n <= cap(list) {
+// UInt32 ensures capacity is greater or equal to reqCap.
+func UInt32(list []uint32, reqCap int, newCap NewCapFunc) []uint32 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]uint32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// UInt32D2 ensures capacity of list is greater or equal to len(list) + n.
-func UInt32D2(list [][]uint32, index int) [][]uint32 {
-	if len(list) + n <= cap(list) {
+// UInt32D2 ensures capacity is greater or equal to reqCap.
+func UInt32D2(list [][]uint32, reqCap int, newCap NewCapFunc) [][]uint32 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]uint32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt32D3 ensures capacity of list is greater or equal to len(list) + n.
-func UInt32D3(list [][][]uint32, index int) [][][]uint32 {
-	if len(list) + n <= cap(list) {
+// UInt32D3 ensures capacity is greater or equal to reqCap.
+func UInt32D3(list [][][]uint32, reqCap int, newCap NewCapFunc) [][][]uint32 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][]uint32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// UInt32D4 ensures capacity of list is greater or equal to len(list) + n.
-func UInt32D4(list [][][][]uint32, index int) [][][][]uint32 {
-	if len(list) + n <= cap(list) {
+// UInt32D4 ensures capacity is greater or equal to reqCap.
+func UInt32D4(list [][][][]uint32, reqCap int, newCap NewCapFunc) [][][][]uint32 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]uint32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt32D5 ensures capacity of list is greater or equal to len(list) + n.
-func UInt32D5(list [][][][][]uint32, index int) [][][][][]uint32 {
-	if len(list) + n <= cap(list) {
+// UInt32D5 ensures capacity is greater or equal to reqCap.
+func UInt32D5(list [][][][][]uint32, reqCap int, newCap NewCapFunc) [][][][][]uint32 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][][]uint32, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt64 ensures capacity of list is greater or equal to len(list) + n.
-func UInt64(list []uint64, index int) []uint64 {
-	if len(list) + n <= cap(list) {
+// UInt64 ensures capacity is greater or equal to reqCap.
+func UInt64(list []uint64, reqCap int, newCap NewCapFunc) []uint64 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([]uint64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// UInt64D2 ensures capacity of list is greater or equal to len(list) + n.
-func UInt64D2(list [][]uint64, index int) [][]uint64 {
-	if len(list) + n <= cap(list) {
+// UInt64D2 ensures capacity is greater or equal to reqCap.
+func UInt64D2(list [][]uint64, reqCap int, newCap NewCapFunc) [][]uint64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][]uint64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt64D3 ensures capacity of list is greater or equal to len(list) + n.
-func UInt64D3(list [][][]uint64, index int) [][][]uint64 {
-	if len(list) + n <= cap(list) {
+// UInt64D3 ensures capacity is greater or equal to reqCap.
+func UInt64D3(list [][][]uint64, reqCap int, newCap NewCapFunc) [][][]uint64 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][]uint64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
 
-// UInt64D4 ensures capacity of list is greater or equal to len(list) + n.
-func UInt64D4(list [][][][]uint64, index int) [][][][]uint64 {
-	if len(list) + n <= cap(list) {
+// UInt64D4 ensures capacity is greater or equal to reqCap.
+func UInt64D4(list [][][][]uint64, reqCap int, newCap NewCapFunc) [][][][]uint64 {
+	if reqCap <= cap(list) {
 		return list
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
+	newList := make([][][][]uint64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
+	}
 	return newList
 }
 
-// UInt64D5 ensures capacity of list is greater or equal to len(list) + n.
-func UInt64D5(list [][][][][]uint64, index int) [][][][][]uint64 {
-	if len(list) + n <= cap(list) {
+// UInt64D5 ensures capacity is greater or equal to reqCap.
+func UInt64D5(list [][][][][]uint64, reqCap int, newCap NewCapFunc) [][][][][]uint64 {
+	if reqCap <= cap(list) {
 		return list
+	}
+	newList := make([][][][][]uint64, len(list), newCap(len(list), cap(list), reqCap))
+	if len(list) > 0 {
+		copy(newList, list)
 	}
-	newList := make([]bool, len(list), newCap(len(list), len(cap), n))
-	copy(newList, list)
 	return newList
 }
