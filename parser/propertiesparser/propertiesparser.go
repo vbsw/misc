@@ -33,7 +33,7 @@ const (
 	LTUnknownFormat = 7
 )
 
-// LineParser holds the line type and indices for property name and its value.
+// LineParser holds line type and indices for property name and property value.
 type LineParser struct {
 	LineType  int
 	PropBegin int
@@ -42,8 +42,8 @@ type LineParser struct {
 	ValEnd    int
 }
 
-// ParseLine processes one line searching for property name and its value. The result
-// is written to parser fields. Returned value is the offset of next line.
+// ParseLine processes one line searching for property name and property value. Result
+// is written to LineParser fields. Returns offset of next line.
 func (parser *LineParser) ParseLine(bytes []byte, i int) int {
 	lineEnd, nextLineBegin := seekLineEnd(bytes, i, len(bytes))
 	contentBegin := seekContent(bytes, i, lineEnd)
@@ -64,7 +64,7 @@ func (parser *LineParser) ParseLine(bytes []byte, i int) int {
 	return nextLineBegin
 }
 
-// Set assignes values to parser fields.
+// Set assignes values to LineParser fields.
 func (parser *LineParser) Set(lt, propBegin, propEnd, valBegin, valEnd int) {
 	parser.LineType = lt
 	parser.PropBegin = propBegin
@@ -73,10 +73,12 @@ func (parser *LineParser) Set(lt, propBegin, propEnd, valBegin, valEnd int) {
 	parser.ValEnd = valEnd
 }
 
+// PropertyName returns property name as string.
 func (parser *LineParser) PropertyName(bytes, buffer []byte) []byte {
 	return convertEscapedBytesToBytes(bytes, buffer, parser.PropBegin, parser.PropEnd)
 }
 
+// PropertyName returns property value as string.
 func (parser *LineParser) PropertyValue(bytes, buffer []byte) []byte {
 	return convertEscapedBytesToBytes(bytes, buffer, parser.ValBegin, parser.ValEnd)
 }
