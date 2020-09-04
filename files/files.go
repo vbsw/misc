@@ -79,3 +79,14 @@ func DirSizeF(path string) int64 {
 	})
 	return size
 }
+
+// Write writes to file bytes. If file does not exist, it is created.
+// If file exists it is overwritten. File mode is 0666.
+func Write(path string, bytes []byte) error {
+	out, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	if err == nil {
+		defer out.Close()
+		_, err = out.Write(bytes)
+	}
+	return err
+}
