@@ -12,12 +12,37 @@ import (
 	"path/filepath"
 	"runtime"
 	"testing"
-	"unsafe"
 )
+
+func TestToBytes(t *testing.T) {
+	props := map[string]string{"al ice": "a"}
+	nlLength := newLineLength(runtime.GOOS)
+
+	bytes := ToBytes(props)
+	if len(bytes) != len("al\\ ice=a")+nlLength {
+		t.Error(len(bytes), len("al\\ ice=a")+nlLength)
+	} else if string(bytes[:len(bytes)-nlLength]) != "al\\ ice=a" {
+		t.Error(string(bytes[:len(bytes)-nlLength]), "al\\ ice=a")
+	}
+
+	bytes = ToBytes(props, Spaces, OpCollon)
+	if len(bytes) != len("al\\ ice : a")+nlLength {
+		t.Error(len(bytes), len("al\\ ice : a")+nlLength)
+	} else if string(bytes[:len(bytes)-nlLength]) != "al\\ ice : a" {
+		t.Error(string(bytes[:len(bytes)-nlLength]), "al\\ ice : a")
+	}
+
+	bytes = ToBytes(props, OpSpace)
+	if len(bytes) != len("al\\ ice a")+nlLength {
+		t.Error(len(bytes), len("al\\ ice a")+nlLength)
+	} else if string(bytes[:len(bytes)-nlLength]) != "al\\ ice a" {
+		t.Error(string(bytes[:len(bytes)-nlLength]), "al\\ ice a")
+	}
+}
 
 func TestReadBytes(t *testing.T) {
 	props := map[string]string{"alice": "a", "bob": "", "clair": "c", "david": "d"}
-	bytes := propsToBytes(props)
+	bytes := ToBytes(props)
 	propsResult := ReadBytes(bytes)
 
 	if len(props) == len(propsResult) {
@@ -62,61 +87,5 @@ func checkProps(props map[string]string, k, v string, t *testing.T) {
 		}
 	} else {
 		t.Error(k, "does not exist")
-	}
-}
-
-func propsToBytes(props map[string]string) []byte {
-	length := propsToBytesLength(props)
-	bytes := make([]byte, length)
-	if runtime.GOOS == "windows" {
-		copyPropsToBytesWindows(bytes, props)
-	} else {
-		copyPropsToBytes(bytes, props)
-	}
-	return bytes
-}
-
-func propsToBytesLength(props map[string]string) int {
-	var length int
-	for k, v := range props {
-		if len(k) > 0 {
-			length += len(k) + len(v)
-		}
-	}
-	// plus assignment operator and line endings
-	if runtime.GOOS == "windows" {
-		return length + 3*len(props)
-	}
-	return length + 2*len(props)
-}
-
-func copyPropsToBytesWindows(bytes []byte, props map[string]string) {
-	for k, v := range props {
-		if len(k) > 0 {
-			kBytes := *(*[]byte)(unsafe.Pointer(&k))
-			vBytes := *(*[]byte)(unsafe.Pointer(&v))
-			lineLength := len(kBytes) + len(vBytes) + 1
-			copy(bytes, kBytes)
-			bytes[len(kBytes)] = '='
-			copy(bytes[len(kBytes)+1:], vBytes)
-			bytes[lineLength] = '\r'
-			bytes[lineLength+1] = '\n'
-			bytes = bytes[lineLength+2:]
-		}
-	}
-}
-
-func copyPropsToBytes(bytes []byte, props map[string]string) {
-	for k, v := range props {
-		if len(k) > 0 {
-			kBytes := *(*[]byte)(unsafe.Pointer(&k))
-			vBytes := *(*[]byte)(unsafe.Pointer(&v))
-			lineLength := len(kBytes) + len(vBytes) + 1
-			copy(bytes, kBytes)
-			bytes[len(kBytes)] = '='
-			copy(bytes[len(kBytes)+1:], vBytes)
-			bytes[lineLength] = '\n'
-			bytes = bytes[lineLength+1:]
-		}
 	}
 }

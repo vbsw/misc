@@ -25,8 +25,8 @@ properties is distributed in the hope that it will be useful, but WITHOUT ANY WA
 		props, err := properties.ReadFile("some/path/to/file")
 
 		if err == nil {
-			for k, v := range props {
-				fmt.Println(k, v)
+			for propName, propValue := range props {
+				fmt.Println(propName, propValue)
 			}
 		}
 	}
