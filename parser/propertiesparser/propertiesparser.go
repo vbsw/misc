@@ -15,7 +15,6 @@ import (
 
 const (
 	// LT = line type
-
 	// LTUndefined denotes initial state, i.e. nothing has been parsed.
 	LTUndefined = 0
 	// LTEmptyLine denotes empty line or a line with whitespace, only.
