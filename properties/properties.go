@@ -18,14 +18,19 @@ import (
 	"runtime"
 )
 
+// formatting options
 const (
+	// put spaces around the assignment operator
 	Spaces   = 0
+	// use collon as the assignment operator
 	OpCollon = 1
+	// use equal sign as the assignment operator
 	OpEqual  = 2
+	// use space as the assignment operator
 	OpSpace  = 3
 )
 
-// ReadFile reads properties from file. The file must be in UTF-8.
+// ReadFile reads properties from file. File must be in UTF-8.
 func ReadFile(path string) (map[string]string, error) {
 	bytes, err := ioutil.ReadFile(path)
 	if err == nil {
@@ -66,7 +71,7 @@ func ReadBytes(bytes []byte) map[string]string {
 	return props
 }
 
-// WriteFile writes key value pairs from props to path.
+// WriteFile writes properties to file.
 func WriteFile(path string, props map[string]string) error {
 	if len(props) > 0 {
 		out, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
@@ -85,7 +90,7 @@ func WriteFile(path string, props map[string]string) error {
 	return nil
 }
 
-// ToBytes converts props to a byte array.
+// ToBytes converts properties to byte array.
 func ToBytes(props map[string]string, formatting ...int) []byte {
 	asgSpotBytes := assignmentSpotBytes(formatting)
 	nlBytes := newLineBytes()
