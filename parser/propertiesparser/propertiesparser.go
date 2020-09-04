@@ -79,7 +79,7 @@ func (parser *LineParser) PropertyName(bytes, buffer []byte) []byte {
 	return convertEscapedBytesToBytes(bytes, buffer, parser.PropBegin, parser.PropEnd)
 }
 
-// PropertyName returns property value as string.
+// PropertyValue returns property value as string.
 func (parser *LineParser) PropertyValue(bytes, buffer []byte) []byte {
 	return convertEscapedBytesToBytes(bytes, buffer, parser.ValBegin, parser.ValEnd)
 }
@@ -118,9 +118,8 @@ func seekLineEnd(bytes []byte, from, to int) (int, int) {
 		} else if bytes[i] == '\r' {
 			if i+1 < to && bytes[i+1] == '\n' {
 				return i, i + 2
-			} else {
-				return i, i + 1
 			}
+			return i, i + 1
 		}
 	}
 	return to, to
