@@ -22,13 +22,13 @@ const (
 	// Formatting Options
 
 	// Spaces enables spaces around the assignment operator.
-	Spaces   = 0
+	Spaces = 0
 	// OpCollon enables collon as the assignment operator.
 	OpCollon = 1
 	// OpEqual enables equal sign as the assignment operator.
-	OpEqual  = 2
+	OpEqual = 2
 	// OpSpace enables space as the assignment operator.
-	OpSpace  = 3
+	OpSpace = 3
 )
 
 // ReadFile reads properties from file. File must be in UTF-8.
