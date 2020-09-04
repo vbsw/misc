@@ -18,7 +18,7 @@ import (
 	"runtime"
 )
 
-// Formatting Options
+// Formatting options.
 const (
 	// Spaces enables spaces around the assignment operator.
 	Spaces = 0

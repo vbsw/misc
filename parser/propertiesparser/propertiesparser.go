@@ -13,7 +13,7 @@ import (
 	"unicode/utf8"
 )
 
-// line types (LT)
+// Line types (LT).
 const (
 	// LTUndefined denotes initial state, i.e. nothing has been parsed.
 	LTUndefined = 0
