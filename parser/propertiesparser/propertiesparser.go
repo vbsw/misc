@@ -44,22 +44,22 @@ type LineParser struct {
 
 // ParseLine processes one line searching for property name and property value. Result
 // is written to LineParser fields. Returns offset of next line.
-func (parser *LineParser) ParseLine(bytes []byte, i int) int {
-	lineEnd, nextLineBegin := seekLineEnd(bytes, i, len(bytes))
-	contentBegin := seekContent(bytes, i, lineEnd)
+func (parser *LineParser) ParseLine(bytes []byte, offset int) int {
+	lineEnd, nextLineBegin := seekLineEnd(bytes, offset, len(bytes))
+	contentBegin := seekContent(bytes, offset, lineEnd)
 	if contentBegin < lineEnd {
 		contentEnd := seekContentRight(bytes, contentBegin, lineEnd)
 		if isComment(bytes[contentBegin]) {
-			parser.Set(LTComment, i, i, contentBegin, contentEnd)
+			parser.Set(LTComment, offset, offset, contentBegin, contentEnd)
 		} else if parser.LineType != LTPropertyNext && parser.LineType != LTPropertyContNext {
 			parser.parseProperty(bytes, contentBegin, contentEnd)
 		} else {
 			parser.parseValueCont(bytes, contentBegin, contentEnd)
 		}
 	} else if parser.LineType == LTPropertyNext || parser.LineType == LTPropertyContNext {
-		parser.Set(LTPropertyCont, i, i, i, i)
+		parser.Set(LTPropertyCont, offset, offset, offset, offset)
 	} else {
-		parser.Set(LTEmptyLine, i, i, i, i)
+		parser.Set(LTEmptyLine, offset, offset, offset, offset)
 	}
 	return nextLineBegin
 }
