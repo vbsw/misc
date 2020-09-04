@@ -18,8 +18,8 @@ import (
 	"runtime"
 )
 
+// Formatting Options
 const (
-	// Formatting Options
 	// Spaces enables spaces around the assignment operator.
 	Spaces = 0
 	// OpCollon enables collon as the assignment operator.
