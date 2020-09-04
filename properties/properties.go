@@ -18,15 +18,16 @@ import (
 	"runtime"
 )
 
-// formatting options
 const (
-	// put spaces around the assignment operator
+	// Formatting Options
+
+	// Spaces enables spaces around the assignment operator.
 	Spaces   = 0
-	// use collon as the assignment operator
+	// OpCollon enables collon as the assignment operator.
 	OpCollon = 1
-	// use equal sign as the assignment operator
+	// OpEqual enables equal sign as the assignment operator.
 	OpEqual  = 2
-	// use space as the assignment operator
+	// OpSpace enables space as the assignment operator.
 	OpSpace  = 3
 )
 

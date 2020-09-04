@@ -67,7 +67,7 @@ func DirSizeR(path string) int64 {
 	return size
 }
 
-// DirSizeF returns total size of files in bytes, excluding subdirectories.
+// DirSizeF returns total size of files in bytes, no subdirectories included.
 // If directory does not exist or is a file it returns 0.
 func DirSizeF(path string) int64 {
 	var size int64

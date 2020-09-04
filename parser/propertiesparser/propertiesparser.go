@@ -15,21 +15,22 @@ import (
 
 const (
 	// LT = line type
-	// initial state, nothing has been parsed
+
+	// LTUndefined denotes initial state, i.e. nothing has been parsed.
 	LTUndefined = 0
-	// line empty or has only whitespace
+	// LTEmptyLine denotes empty line or a line with whitespace, only.
 	LTEmptyLine = 1
-	// line has property
+	// LTProperty denotes line with property.
 	LTProperty = 2
-	// continuation of property value on next line
+	// LTPropertyNext denotes line with property and continuation of property value on next line.
 	LTPropertyNext = 3
-	// continuation of property value
+	// LTPropertyCont denotes line with continuation of property value from previous line.
 	LTPropertyCont = 4
-	// continuation of property value and continuation on next line
+	// LTPropertyContNext denotes line with continuation of property value from previous line and its continuation on next line.
 	LTPropertyContNext = 5
-	// line is a comment
+	// LTComment denotes comment line.
 	LTComment = 6
-	// line has something that can not be interpreted
+	// LTUnknownFormat denotes line with something that can not be interpreted.
 	LTUnknownFormat = 7
 )
 
