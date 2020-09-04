@@ -71,9 +71,9 @@ func ReadBytes(bytes []byte) map[string]string {
 }
 
 // WriteFile writes properties to file.
-func WriteFile(path string, propName, propValue []string) error {
-	if len(propName) > 0 {
-		bytes := ToBytes(propName, propValue)
+func WriteFile(path string, propNames, propValues []string) error {
+	if len(propNames) > 0 {
+		bytes := ToBytes(propNames, propValues)
 		err := files.Write(path, bytes)
 		return err
 	}
