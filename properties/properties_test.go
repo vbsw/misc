@@ -15,24 +15,25 @@ import (
 )
 
 func TestToBytes(t *testing.T) {
-	props := map[string]string{"al ice": "a"}
+	propNames := []string{"al ice"}
+	propValues := []string{"a"}
 	nlLength := newLineLength(runtime.GOOS)
 
-	bytes := ToBytes(props)
+	bytes := ToBytes(propNames, propValues)
 	if len(bytes) != len("al\\ ice=a")+nlLength {
 		t.Error(len(bytes), len("al\\ ice=a")+nlLength)
 	} else if string(bytes[:len(bytes)-nlLength]) != "al\\ ice=a" {
 		t.Error(string(bytes[:len(bytes)-nlLength]), "al\\ ice=a")
 	}
 
-	bytes = ToBytes(props, Spaces, OpCollon)
+	bytes = ToBytes(propNames, propValues, Spaces, OpCollon)
 	if len(bytes) != len("al\\ ice : a")+nlLength {
 		t.Error(len(bytes), len("al\\ ice : a")+nlLength)
 	} else if string(bytes[:len(bytes)-nlLength]) != "al\\ ice : a" {
 		t.Error(string(bytes[:len(bytes)-nlLength]), "al\\ ice : a")
 	}
 
-	bytes = ToBytes(props, OpSpace)
+	bytes = ToBytes(propNames, propValues, OpSpace)
 	if len(bytes) != len("al\\ ice a")+nlLength {
 		t.Error(len(bytes), len("al\\ ice a")+nlLength)
 	} else if string(bytes[:len(bytes)-nlLength]) != "al\\ ice a" {
@@ -41,13 +42,15 @@ func TestToBytes(t *testing.T) {
 }
 
 func TestReadBytes(t *testing.T) {
-	props := map[string]string{"alice": "a", "bob": "", "clair": "c", "david": "d"}
-	bytes := ToBytes(props)
+	propNames := []string{"alice", "bob", "clair", "david"}
+	propValues := []string{"a", "", "c", "d"}
+	bytes := ToBytes(propNames, propValues)
 	propsResult := ReadBytes(bytes)
 
-	if len(props) == len(propsResult) {
-		for k, v := range props {
-			checkProps(propsResult, k, v, t)
+	if len(propNames) == len(propsResult) {
+		for i, propName := range propNames {
+			propValue := propValues[i]
+			checkProps(propsResult, propName, propValue, t)
 		}
 	} else {
 		t.Error(len(propsResult))
@@ -66,26 +69,28 @@ func TestReadBytes(t *testing.T) {
 
 func TestWriteRead(t *testing.T) {
 	path := filepath.Join(os.TempDir(), "test.properties")
-	props := map[string]string{"alice": "a", "bob": "b", "clair": "c", "david": "d"}
-	WriteFile(path, props)
+	propNames := []string{"alice", "bob", "clair", "david"}
+	propValues := []string{"a", "b", "c", "d"}
+	WriteFile(path, propNames, propValues)
 	propsResult, _ := ReadFile(path)
 
-	if len(props) == len(propsResult) {
-		for k, v := range props {
-			checkProps(propsResult, k, v, t)
+	if len(propNames) == len(propsResult) {
+		for i, propName := range propNames {
+			propValue := propValues[i]
+			checkProps(propsResult, propName, propValue, t)
 		}
 	} else {
 		t.Error(len(propsResult))
 	}
 }
 
-func checkProps(props map[string]string, k, v string, t *testing.T) {
-	propsVal, exists := props[k]
+func checkProps(props map[string]string, propName, propValue string, t *testing.T) {
+	propsVal, exists := props[propName]
 	if exists {
-		if propsVal != v {
+		if propsVal != propValue {
 			t.Error(propsVal)
 		}
 	} else {
-		t.Error(k, "does not exist")
+		t.Error(propName, "does not exist")
 	}
 }

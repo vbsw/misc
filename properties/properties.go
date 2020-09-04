@@ -9,12 +9,11 @@
 package properties
 
 import (
+	"github.com/vbsw/misc/files"
 	"github.com/vbsw/misc/parser/propertiesparser"
 	"github.com/vbsw/misc/ref"
 	"github.com/vbsw/misc/slices/contains"
-	"io"
 	"io/ioutil"
-	"os"
 	"runtime"
 )
 
@@ -72,33 +71,25 @@ func ReadBytes(bytes []byte) map[string]string {
 }
 
 // WriteFile writes properties to file.
-func WriteFile(path string, props map[string]string) error {
-	if len(props) > 0 {
-		out, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
-
-		if err == nil {
-			defer out.Close()
-			bytes := ToBytes(props)
-			_, err = out.Write(bytes)
-
-			if err == io.EOF {
-				return nil
-			}
-			return err
-		}
+func WriteFile(path string, propName, propValue []string) error {
+	if len(propName) > 0 {
+		bytes := ToBytes(propName, propValue)
+		err := files.Write(path, bytes)
+		return err
 	}
 	return nil
 }
 
 // ToBytes converts properties to byte array.
-func ToBytes(props map[string]string, formatting ...int) []byte {
+func ToBytes(propNames, propValues []string, formatting ...int) []byte {
 	asgSpotBytes := assignmentSpotBytes(formatting)
 	nlBytes := newLineBytes()
 	spaces := contains.Int(formatting, Spaces)
-	bytes := newPropertiesByteBuffer(props, spaces)
+	bytes := newPropertiesByteBuffer(propNames, propValues, spaces)
 	bytesW := bytes
-	for propName, propValue := range props {
+	for i, propName := range propNames {
 		if len(propName) > 0 {
+			propValue := propValues[i]
 			propNameBytes := ref.Bytes(propName)
 			propValueBytes := ref.Bytes(propValue)
 			bytesW = writePropertyNameBytes(bytesW, propNameBytes)
@@ -162,9 +153,9 @@ func newLineBytes() []byte {
 	return []byte{'\n'}
 }
 
-func newPropertiesByteBuffer(props map[string]string, spaces bool) []byte {
-	propsBytesNum, linesNum := totalPropsBytesNumber(props)
-	escCharsNum := totalEscapedCharsNumber(props)
+func newPropertiesByteBuffer(propNames, propValues []string, spaces bool) []byte {
+	propsBytesNum, linesNum := totalPropsBytesNumber(propNames, propValues)
+	escCharsNum := totalEscapedCharsNumber(propNames)
 	nlLength := newLineLength(runtime.GOOS)
 	asgSpotLength := assignmentSpotLength(spaces)
 	bytesLength := propsBytesNum + escCharsNum + (nlLength+asgSpotLength)*linesNum
@@ -172,10 +163,11 @@ func newPropertiesByteBuffer(props map[string]string, spaces bool) []byte {
 	return bytes
 }
 
-func totalPropsBytesNumber(props map[string]string) (int, int) {
+func totalPropsBytesNumber(propNames, propValues []string) (int, int) {
 	var bytesNum, linesNum int
-	for propName, propValue := range props {
+	for i, propName := range propNames {
 		if len(propName) > 0 {
+			propValue := propValues[i]
 			bytesNum += len(propName) + len(propValue)
 			linesNum++
 		}
@@ -183,9 +175,9 @@ func totalPropsBytesNumber(props map[string]string) (int, int) {
 	return bytesNum, linesNum
 }
 
-func totalEscapedCharsNumber(props map[string]string) int {
+func totalEscapedCharsNumber(propNames []string) int {
 	var escCharsNum int
-	for propName := range props {
+	for _, propName := range propNames {
 		bytes := ref.Bytes(propName)
 		for _, b := range bytes {
 			if b == ' ' || b == ':' || b == '=' || b == '\\' {
