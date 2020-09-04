@@ -65,8 +65,8 @@ func (parser *LineParser) ParseLine(bytes []byte, i int) int {
 }
 
 // Set assignes values to LineParser fields.
-func (parser *LineParser) Set(lt, propBegin, propEnd, valBegin, valEnd int) {
-	parser.LineType = lt
+func (parser *LineParser) Set(lineType, propBegin, propEnd, valBegin, valEnd int) {
+	parser.LineType = lineType
 	parser.PropBegin = propBegin
 	parser.PropEnd = propEnd
 	parser.ValBegin = valBegin
