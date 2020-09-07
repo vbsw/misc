@@ -5,7 +5,6 @@
  *        http://www.boost.org/LICENSE_1_0.txt)
  */
 
-// Package lineparser provides functions to parse property files of Java Properties File Format.
 package lineparser
 
 func seekLineEnd(bytes []byte, from, to int) (int, int) {
