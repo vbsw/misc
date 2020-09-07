@@ -5,32 +5,31 @@
  *        http://www.boost.org/LICENSE_1_0.txt)
  */
 
-// Package propertiesparser provides functions to parse property files of Java Properties File Format.
-package propertiesparser
+// Package lineparser provides functions to parse property files of Java Properties File Format.
+package lineparser
 
 import (
-	"github.com/vbsw/misc/slices/ensurecap"
 	"unicode/utf8"
 )
 
-// Line types (LT).
+// Line types.
 const (
-	// LTUndefined denotes initial state, i.e. nothing has been parsed.
-	LTUndefined = 0
-	// LTEmptyLine denotes empty line or a line with whitespace, only.
-	LTEmptyLine = 1
-	// LTProperty denotes line with property.
-	LTProperty = 2
-	// LTPropertyNext denotes line with property and continuation of property value on next line.
-	LTPropertyNext = 3
-	// LTPropertyCont denotes line with continuation of property value from previous line.
-	LTPropertyCont = 4
-	// LTPropertyContNext denotes line with continuation of property value from previous line and its continuation on next line.
-	LTPropertyContNext = 5
-	// LTComment denotes comment line.
-	LTComment = 6
-	// LTUnknownFormat denotes line with something that can not be interpreted.
-	LTUnknownFormat = 7
+	// LUndefined denotes initial state, i.e. nothing has been parsed.
+	LUndefined = 0
+	// LEmpty denotes empty line or a line with whitespace, only.
+	LEmpty = 1
+	// LProperty denotes line with property.
+	LProperty = 2
+	// LPropertyNext denotes line with property and continuation of property value on next line.
+	LPropertyNext = 3
+	// LPropertyCont denotes line with continuation of property value from previous line.
+	LPropertyCont = 4
+	// LPropertyContNext denotes line with continuation of property value from previous line and its continuation on next line.
+	LPropertyContNext = 5
+	// LComment denotes comment line.
+	LComment = 6
+	// LUnknownFormat denotes line with something that can not be interpreted.
+	LUnknownFormat = 7
 )
 
 // LineParser holds line type and indices for property name and property value.
@@ -50,16 +49,16 @@ func (parser *LineParser) ParseLine(bytes []byte, offset int) int {
 	if contentBegin < lineEnd {
 		contentEnd := seekContentRight(bytes, contentBegin, lineEnd)
 		if isComment(bytes[contentBegin]) {
-			parser.Set(LTComment, offset, offset, contentBegin, contentEnd)
-		} else if parser.LineType != LTPropertyNext && parser.LineType != LTPropertyContNext {
+			parser.Set(LComment, offset, offset, contentBegin, contentEnd)
+		} else if parser.LineType != LPropertyNext && parser.LineType != LPropertyContNext {
 			parser.parseProperty(bytes, contentBegin, contentEnd)
 		} else {
 			parser.parseValueCont(bytes, contentBegin, contentEnd)
 		}
-	} else if parser.LineType == LTPropertyNext || parser.LineType == LTPropertyContNext {
-		parser.Set(LTPropertyCont, offset, offset, offset, offset)
+	} else if parser.LineType == LPropertyNext || parser.LineType == LPropertyContNext {
+		parser.Set(LPropertyCont, offset, offset, offset, offset)
 	} else {
-		parser.Set(LTEmptyLine, offset, offset, offset, offset)
+		parser.Set(LEmpty, offset, offset, offset, offset)
 	}
 	return nextLineBegin
 }
@@ -91,83 +90,23 @@ func (parser *LineParser) parseProperty(bytes []byte, from, to int) {
 		valBegin := seekContent(bytes, asgOpBegin+1, to)
 		valEnd := seekContentRight(bytes, valBegin, to)
 		if isPropValueNext(bytes, valBegin, valEnd) {
-			parser.Set(LTPropertyNext, propBegin, propEnd, valBegin, valEnd-1)
+			parser.Set(LPropertyNext, propBegin, propEnd, valBegin, valEnd-1)
 		} else {
-			parser.Set(LTProperty, propBegin, propEnd, valBegin, valEnd)
+			parser.Set(LProperty, propBegin, propEnd, valBegin, valEnd)
 		}
 	} else if isPropValueNext(bytes, propBegin, propEnd) {
-		parser.Set(LTUnknownFormat, propBegin, propEnd, propEnd, propEnd)
+		parser.Set(LUnknownFormat, propBegin, propEnd, propEnd, propEnd)
 	} else {
-		parser.Set(LTProperty, propBegin, propEnd, propEnd, propEnd)
+		parser.Set(LProperty, propBegin, propEnd, propEnd, propEnd)
 	}
 }
 
 func (parser *LineParser) parseValueCont(bytes []byte, from, to int) {
 	if isPropValueNext(bytes, from, to) {
-		parser.Set(LTPropertyContNext, from, from, from, to-1)
+		parser.Set(LPropertyContNext, from, from, from, to-1)
 	} else {
-		parser.Set(LTPropertyCont, from, from, from, to)
+		parser.Set(LPropertyCont, from, from, from, to)
 	}
-}
-
-func seekLineEnd(bytes []byte, from, to int) (int, int) {
-	for i := from; i < to; i++ {
-		if bytes[i] == '\n' {
-			return i, i + 1
-		} else if bytes[i] == '\r' {
-			if i+1 < to && bytes[i+1] == '\n' {
-				return i, i + 2
-			}
-			return i, i + 1
-		}
-	}
-	return to, to
-}
-
-func seekContent(bytes []byte, from, to int) int {
-	for i := from; i < to; i++ {
-		if bytes[i] < 0 || bytes[i] > 32 {
-			return i
-		}
-	}
-	return to
-}
-
-func seekContentRight(bytes []byte, from, to int) int {
-	for i := to - 1; i >= from; i-- {
-		if bytes[i] < 0 || bytes[i] > 32 {
-			return i + 1
-		}
-	}
-	return from
-}
-
-func seekAssignmentOp(bytes []byte, from, to int) int {
-	for i := from; i < to; i++ {
-		if bytes[i] == '\\' {
-			i++
-		} else if isAssignmentOp(bytes[i]) {
-			return i
-		} else if bytes[i] == ' ' {
-			contentBegin := seekContent(bytes, i, to)
-			if contentBegin < to && isAssignmentOp(bytes[contentBegin]) {
-				return contentBegin
-			}
-			return i
-		}
-	}
-	return to
-}
-
-func seekUnicodeCharEnd(bytes []byte, from, to int) int {
-	i := from
-	for ; i < to && i < from+4; i++ {
-		b := bytes[i]
-		if (b < '0' || b > '9') && (b < 'A' || b > 'F') && (b < 'a' || b > 'b') {
-			break
-		}
-	}
-	return i
 }
 
 func isComment(b byte) bool {
@@ -230,7 +169,7 @@ func appendUnicodeChar(bytes, buffer []byte, from, to int) (int, []byte) {
 			}
 			r += rune(number)
 		}
-		buffer = ensurecap.Byte(buffer, len(buffer)+4, newCap)
+		buffer = ensureCap(buffer, len(buffer)+4)
 		n := utf8.EncodeRune(buffer[len(buffer):len(buffer)+4], r)
 		buffer = buffer[:len(buffer)+n]
 		return end, buffer
@@ -247,6 +186,13 @@ func convertCharToInt(char byte) int {
 	return int(char - 97 + 10)
 }
 
-func newCap(oldLen, oldCap, reqCap int) int {
-	return oldCap * 2
+func ensureCap(bytes []byte, minCap int) []byte {
+	if minCap <= cap(bytes) {
+		return bytes
+	}
+	newBytes := make([]byte, len(bytes), cap(bytes)*2)
+	if len(bytes) > 0 {
+		copy(newBytes, bytes)
+	}
+	return newBytes
 }

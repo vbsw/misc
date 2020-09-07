@@ -13,7 +13,7 @@ type Version interface {
 	Major() uint
 	Minor() uint
 	Patch() uint
-	Label() string
+	PreRel() string
 	Metadata() string
 }
 
@@ -21,20 +21,28 @@ type tVersion struct {
 	major    uint
 	minor    uint
 	patch    uint
-	label    string
+	prerel   string
 	metadata string
 	str      string
 }
 
 // New returns an object implementing the Version interface.
-func New(major, minor, patch uint, label, metadata string) Version {
+// Additional parameters are pre-release label and metadata.
+func New(major, minor, patch uint, more ...string) Version {
+	var prerel, metadata string
 	version := new(tVersion)
 	version.major = major
 	version.minor = minor
 	version.patch = patch
-	version.label = label
+	if len(more) > 0 {
+		prerel = more[0]
+		if len(more) > 1 {
+			metadata = more[1]
+		}
+	}
+	version.prerel = prerel
 	version.metadata = metadata
-	version.str = String(major, minor, patch, label, metadata)
+	version.str = String(major, minor, patch, prerel, metadata)
 	return version
 }
 
@@ -53,14 +61,9 @@ func (version *tVersion) Patch() uint {
 	return version.patch
 }
 
-// String returns version as string formatted "<major>.<minor>.<patch>".
-func (version *tVersion) String() string {
-	return version.str
-}
-
-// Label returns the additional label of pre-release version.
-func (version *tVersion) Label() string {
-	return version.label
+// PreRel returns the pre-release label of version.
+func (version *tVersion) PreRel() string {
+	return version.prerel
 }
 
 // Metadata returns the metadata of version.
@@ -68,9 +71,14 @@ func (version *tVersion) Metadata() string {
 	return version.metadata
 }
 
-// String returns major, minor and patch number with additional label
-// and metadata formatted "<major>.<minor>.<patch>-<label>+<metadata>".
-func String(major, minor, patch uint, label, metadata string) string {
+// String returns the version string formatted "<major>.<minor>.<patch>[-<pre-release>][+<metadata>]".
+func (version *tVersion) String() string {
+	return version.str
+}
+
+// String returns major, minor and patch number with additional preRel
+// and metadata formatted "<major>.<minor>.<patch>[-<preRel>][+<metadata>]".
+func String(major, minor, patch uint, preRel, metadata string) string {
 	var versionStr string
 	if major < 10 && minor < 10 {
 		if patch < 10 {
@@ -101,8 +109,8 @@ func String(major, minor, patch uint, label, metadata string) string {
 	} else {
 		versionStr = uintToString(major) + "." + uintToString(minor) + "." + uintToString(patch)
 	}
-	if len(label) > 0 {
-		versionStr = versionStr + "-" + label
+	if len(preRel) > 0 {
+		versionStr = versionStr + "-" + preRel
 	}
 	if len(metadata) > 0 {
 		versionStr = versionStr + "+" + metadata
@@ -111,16 +119,16 @@ func String(major, minor, patch uint, label, metadata string) string {
 }
 
 func uintToString(value uint) string {
-	var byteArr [20]byte
+	var bytes [100]byte
 	var decimalPlaces int
 	tenth := value / 10
-	byteArr[19] = byte(value - tenth*10 + 48)
+	bytes[len(bytes)-1] = byte(value - tenth*10 + 48)
 	value = tenth
 
-	for decimalPlaces = 1; value > 0 && decimalPlaces < 20; decimalPlaces += 1 {
+	for decimalPlaces = 1; value > 0 && decimalPlaces < len(bytes); decimalPlaces += 1 {
 		tenth := value / 10
-		byteArr[19-decimalPlaces] = byte(value - tenth*10 + 48)
+		bytes[len(bytes)-1-decimalPlaces] = byte(value - tenth*10 + 48)
 		value = tenth
 	}
-	return string(byteArr[20-decimalPlaces:])
+	return string(bytes[len(bytes)-decimalPlaces:])
 }

@@ -10,7 +10,7 @@ package properties
 
 import (
 	"github.com/vbsw/misc/files"
-	"github.com/vbsw/misc/parser/propertiesparser"
+	"github.com/vbsw/misc/properties/lineparser"
 	"github.com/vbsw/misc/ref"
 	"github.com/vbsw/misc/slices/contains"
 	"io/ioutil"
@@ -40,29 +40,29 @@ func ReadFile(path string) (map[string]string, error) {
 
 // ReadBytes reads properties from byte array. Content of byte array must be in UTF-8.
 func ReadBytes(bytes []byte) map[string]string {
-	var parser propertiesparser.LineParser
+	var parser lineparser.LineParser
 	var name string
 	props := make(map[string]string)
 	buffer := make([]byte, 32)
 	for i := 0; i < len(bytes); {
 		i = parser.ParseLine(bytes, i)
-		if parser.LineType == propertiesparser.LTProperty {
+		if parser.LineType == lineparser.LProperty {
 			buffer = parser.PropertyName(bytes, buffer[:0])
 			name = string(buffer)
 			buffer = parser.PropertyValue(bytes, buffer[:0])
 			props[name] = string(buffer)
 			name = ""
-		} else if parser.LineType == propertiesparser.LTPropertyNext {
+		} else if parser.LineType == lineparser.LPropertyNext {
 			buffer = parser.PropertyName(bytes, buffer[:0])
 			name = string(buffer)
 			buffer = parser.PropertyValue(bytes, buffer[:0])
-		} else if parser.LineType == propertiesparser.LTPropertyContNext {
+		} else if parser.LineType == lineparser.LPropertyContNext {
 			buffer = parser.PropertyValue(bytes, buffer)
-		} else if parser.LineType == propertiesparser.LTPropertyCont {
+		} else if parser.LineType == lineparser.LPropertyCont {
 			buffer = parser.PropertyValue(bytes, buffer)
 			props[name] = string(buffer)
 			name = ""
-		} else if parser.LineType == propertiesparser.LTUnknownFormat && len(name) > 0 {
+		} else if parser.LineType == lineparser.LUnknownFormat && len(name) > 0 {
 			props[name] = string(buffer)
 			name = ""
 		}
