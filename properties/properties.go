@@ -10,9 +10,8 @@ package properties
 
 import (
 	"github.com/vbsw/misc/files"
-	"github.com/vbsw/misc/properties/lineparser"
+	"github.com/vbsw/misc/properties/linescanner"
 	"github.com/vbsw/misc/ref"
-	"github.com/vbsw/misc/slices/contains"
 	"io/ioutil"
 	"runtime"
 )
@@ -40,29 +39,29 @@ func ReadFile(path string) (map[string]string, error) {
 
 // ReadBytes reads properties from byte array. Content of byte array must be in UTF-8.
 func ReadBytes(bytes []byte) map[string]string {
-	var parser lineparser.LineParser
+	var scanner linescanner.LineScanner
 	var name string
 	props := make(map[string]string)
 	buffer := make([]byte, 32)
 	for i := 0; i < len(bytes); {
-		i = parser.ParseLine(bytes, i)
-		if parser.LineType == lineparser.LProperty {
-			buffer = parser.PropertyName(bytes, buffer[:0])
+		i = scanner.ScanLine(bytes, i)
+		if scanner.LineType == linescanner.LProperty {
+			buffer = scanner.PropertyName(bytes, buffer[:0])
 			name = string(buffer)
-			buffer = parser.PropertyValue(bytes, buffer[:0])
+			buffer = scanner.PropertyValue(bytes, buffer[:0])
 			props[name] = string(buffer)
 			name = ""
-		} else if parser.LineType == lineparser.LPropertyNext {
-			buffer = parser.PropertyName(bytes, buffer[:0])
+		} else if scanner.LineType == linescanner.LPropertyNext {
+			buffer = scanner.PropertyName(bytes, buffer[:0])
 			name = string(buffer)
-			buffer = parser.PropertyValue(bytes, buffer[:0])
-		} else if parser.LineType == lineparser.LPropertyContNext {
-			buffer = parser.PropertyValue(bytes, buffer)
-		} else if parser.LineType == lineparser.LPropertyCont {
-			buffer = parser.PropertyValue(bytes, buffer)
+			buffer = scanner.PropertyValue(bytes, buffer[:0])
+		} else if scanner.LineType == linescanner.LPropertyContNext {
+			buffer = scanner.PropertyValue(bytes, buffer)
+		} else if scanner.LineType == linescanner.LPropertyCont {
+			buffer = scanner.PropertyValue(bytes, buffer)
 			props[name] = string(buffer)
 			name = ""
-		} else if parser.LineType == lineparser.LUnknownFormat && len(name) > 0 {
+		} else if scanner.LineType == linescanner.LUnknownFormat && len(name) > 0 {
 			props[name] = string(buffer)
 			name = ""
 		}
@@ -82,9 +81,9 @@ func WriteFile(path string, propNames, propValues []string) error {
 
 // ToBytes converts properties to byte array.
 func ToBytes(propNames, propValues []string, formatting ...int) []byte {
-	asgSpotBytes := assignmentSpotBytes(formatting)
+	asgBytes := assignmentBytes(formatting)
 	nlBytes := newLineBytes()
-	spaces := contains.Int(formatting, Spaces)
+	spaces := contains(formatting, Spaces)
 	bytes := newPropertiesByteBuffer(propNames, propValues, spaces)
 	bytesW := bytes
 	for i, propName := range propNames {
@@ -93,11 +92,59 @@ func ToBytes(propNames, propValues []string, formatting ...int) []byte {
 			propNameBytes := ref.Bytes(propName)
 			propValueBytes := ref.Bytes(propValue)
 			bytesW = writePropertyNameBytes(bytesW, propNameBytes)
-			bytesW = writeBytes(bytesW, asgSpotBytes)
+			bytesW = writeBytes(bytesW, asgBytes)
 			bytesW = writeBytes(bytesW, propValueBytes)
 			bytesW = writeBytes(bytesW, nlBytes)
 		}
 	}
+	return bytes
+}
+
+func assignmentBytes(formatting []int) []byte {
+	var asgOp byte
+	var asgBytes []byte
+	if contains(formatting, OpCollon) {
+		asgOp = ':'
+	} else if contains(formatting, OpSpace) {
+		asgOp = ' '
+	} else {
+		asgOp = '='
+	}
+	if contains(formatting, Spaces) {
+		asgBytes = make([]byte, 3)
+		asgBytes[0] = ' '
+		asgBytes[1] = asgOp
+		asgBytes[2] = ' '
+	} else {
+		asgBytes = make([]byte, 1)
+		asgBytes[0] = asgOp
+	}
+	return asgBytes
+}
+
+func newLineBytes() []byte {
+	if runtime.GOOS == "windows" {
+		return []byte{'\r', '\n'}
+	}
+	return []byte{'\n'}
+}
+
+func contains(list []int, value int) bool {
+	for _, val := range list {
+		if val == value {
+			return true
+		}
+	}
+	return false
+}
+
+func newPropertiesByteBuffer(propNames, propValues []string, spaces bool) []byte {
+	propsBytesNum, linesNum := totalPropsBytesNumber(propNames, propValues)
+	escCharsNum := totalEscapedCharsNumber(propNames)
+	nlLength := newLineLength()
+	asgSpotLength := assignmentSpotLength(spaces)
+	bytesLength := propsBytesNum + escCharsNum + (nlLength+asgSpotLength)*linesNum
+	bytes := make([]byte, bytesLength)
 	return bytes
 }
 
@@ -122,45 +169,6 @@ func writePropertyNameBytes(destBytes, srcBytes []byte) []byte {
 func writeBytes(destBytes, srcBytes []byte) []byte {
 	copy(destBytes, srcBytes)
 	return destBytes[len(srcBytes):]
-}
-
-func assignmentSpotBytes(formatting []int) []byte {
-	var asgOp byte
-	var asgSpotBytes []byte
-	if contains.Int(formatting, OpCollon) {
-		asgOp = ':'
-	} else if contains.Int(formatting, OpSpace) {
-		asgOp = ' '
-	} else {
-		asgOp = '='
-	}
-	if contains.Int(formatting, Spaces) {
-		asgSpotBytes = make([]byte, 3)
-		asgSpotBytes[0] = ' '
-		asgSpotBytes[1] = asgOp
-		asgSpotBytes[2] = ' '
-	} else {
-		asgSpotBytes = make([]byte, 1)
-		asgSpotBytes[0] = asgOp
-	}
-	return asgSpotBytes
-}
-
-func newLineBytes() []byte {
-	if runtime.GOOS == "windows" {
-		return []byte{'\r', '\n'}
-	}
-	return []byte{'\n'}
-}
-
-func newPropertiesByteBuffer(propNames, propValues []string, spaces bool) []byte {
-	propsBytesNum, linesNum := totalPropsBytesNumber(propNames, propValues)
-	escCharsNum := totalEscapedCharsNumber(propNames)
-	nlLength := newLineLength(runtime.GOOS)
-	asgSpotLength := assignmentSpotLength(spaces)
-	bytesLength := propsBytesNum + escCharsNum + (nlLength+asgSpotLength)*linesNum
-	bytes := make([]byte, bytesLength)
-	return bytes
 }
 
 func totalPropsBytesNumber(propNames, propValues []string) (int, int) {
@@ -188,8 +196,8 @@ func totalEscapedCharsNumber(propNames []string) int {
 	return escCharsNum
 }
 
-func newLineLength(operatingSystem string) int {
-	if operatingSystem == "windows" {
+func newLineLength() int {
+	if runtime.GOOS == "windows" {
 		return 2
 	}
 	return 1

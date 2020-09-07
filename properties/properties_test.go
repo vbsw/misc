@@ -10,14 +10,13 @@ package properties
 import (
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 )
 
 func TestToBytes(t *testing.T) {
 	propNames := []string{"al ice"}
 	propValues := []string{"a"}
-	nlLength := newLineLength(runtime.GOOS)
+	nlLength := newLineLength()
 
 	bytes := ToBytes(propNames, propValues)
 	if len(bytes) != len("al\\ ice=a")+nlLength {

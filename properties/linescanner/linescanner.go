@@ -5,8 +5,8 @@
  *        http://www.boost.org/LICENSE_1_0.txt)
  */
 
-// Package lineparser provides functions to parse property files of Java Properties File Format.
-package lineparser
+// Package linescanner provides functions to scan lines of property files.
+package linescanner
 
 import (
 	"unicode/utf8"
@@ -32,8 +32,8 @@ const (
 	LUnknownFormat = 7
 )
 
-// LineParser holds line type and indices for property name and property value.
-type LineParser struct {
+// LineScanner holds line type and indices for property name and property value.
+type LineScanner struct {
 	LineType  int
 	PropBegin int
 	PropEnd   int
@@ -41,48 +41,48 @@ type LineParser struct {
 	ValEnd    int
 }
 
-// ParseLine processes one line searching for property name and property value. Result
-// is written to LineParser fields. Returns offset of next line.
-func (parser *LineParser) ParseLine(bytes []byte, offset int) int {
+// ScanLine processes one line searching for property name and property value. Result
+// is written to LineScanner fields. Returns offset of next line.
+func (scanner *LineScanner) ScanLine(bytes []byte, offset int) int {
 	lineEnd, nextLineBegin := seekLineEnd(bytes, offset, len(bytes))
 	contentBegin := seekContent(bytes, offset, lineEnd)
 	if contentBegin < lineEnd {
 		contentEnd := seekContentRight(bytes, contentBegin, lineEnd)
 		if isComment(bytes[contentBegin]) {
-			parser.Set(LComment, offset, offset, contentBegin, contentEnd)
-		} else if parser.LineType != LPropertyNext && parser.LineType != LPropertyContNext {
-			parser.parseProperty(bytes, contentBegin, contentEnd)
+			scanner.Set(LComment, offset, offset, contentBegin, contentEnd)
+		} else if scanner.LineType != LPropertyNext && scanner.LineType != LPropertyContNext {
+			scanner.parseProperty(bytes, contentBegin, contentEnd)
 		} else {
-			parser.parseValueCont(bytes, contentBegin, contentEnd)
+			scanner.parseValueCont(bytes, contentBegin, contentEnd)
 		}
-	} else if parser.LineType == LPropertyNext || parser.LineType == LPropertyContNext {
-		parser.Set(LPropertyCont, offset, offset, offset, offset)
+	} else if scanner.LineType == LPropertyNext || scanner.LineType == LPropertyContNext {
+		scanner.Set(LPropertyCont, offset, offset, offset, offset)
 	} else {
-		parser.Set(LEmpty, offset, offset, offset, offset)
+		scanner.Set(LEmpty, offset, offset, offset, offset)
 	}
 	return nextLineBegin
 }
 
-// Set assignes values to LineParser fields.
-func (parser *LineParser) Set(lineType, propBegin, propEnd, valBegin, valEnd int) {
-	parser.LineType = lineType
-	parser.PropBegin = propBegin
-	parser.PropEnd = propEnd
-	parser.ValBegin = valBegin
-	parser.ValEnd = valEnd
+// Set assignes values to LineScanner fields.
+func (scanner *LineScanner) Set(lineType, propBegin, propEnd, valBegin, valEnd int) {
+	scanner.LineType = lineType
+	scanner.PropBegin = propBegin
+	scanner.PropEnd = propEnd
+	scanner.ValBegin = valBegin
+	scanner.ValEnd = valEnd
 }
 
 // PropertyName returns property name as string.
-func (parser *LineParser) PropertyName(bytes, buffer []byte) []byte {
-	return convertEscapedBytesToBytes(bytes, buffer, parser.PropBegin, parser.PropEnd)
+func (scanner *LineScanner) PropertyName(bytes, buffer []byte) []byte {
+	return convertEscapedBytesToBytes(bytes, buffer, scanner.PropBegin, scanner.PropEnd)
 }
 
 // PropertyValue returns property value as string.
-func (parser *LineParser) PropertyValue(bytes, buffer []byte) []byte {
-	return convertEscapedBytesToBytes(bytes, buffer, parser.ValBegin, parser.ValEnd)
+func (scanner *LineScanner) PropertyValue(bytes, buffer []byte) []byte {
+	return convertEscapedBytesToBytes(bytes, buffer, scanner.ValBegin, scanner.ValEnd)
 }
 
-func (parser *LineParser) parseProperty(bytes []byte, from, to int) {
+func (scanner *LineScanner) parseProperty(bytes []byte, from, to int) {
 	propBegin := from
 	asgOpBegin := seekAssignmentOp(bytes, propBegin, to)
 	propEnd := seekContentRight(bytes, propBegin, asgOpBegin)
@@ -90,22 +90,22 @@ func (parser *LineParser) parseProperty(bytes []byte, from, to int) {
 		valBegin := seekContent(bytes, asgOpBegin+1, to)
 		valEnd := seekContentRight(bytes, valBegin, to)
 		if isPropValueNext(bytes, valBegin, valEnd) {
-			parser.Set(LPropertyNext, propBegin, propEnd, valBegin, valEnd-1)
+			scanner.Set(LPropertyNext, propBegin, propEnd, valBegin, valEnd-1)
 		} else {
-			parser.Set(LProperty, propBegin, propEnd, valBegin, valEnd)
+			scanner.Set(LProperty, propBegin, propEnd, valBegin, valEnd)
 		}
 	} else if isPropValueNext(bytes, propBegin, propEnd) {
-		parser.Set(LUnknownFormat, propBegin, propEnd, propEnd, propEnd)
+		scanner.Set(LUnknownFormat, propBegin, propEnd, propEnd, propEnd)
 	} else {
-		parser.Set(LProperty, propBegin, propEnd, propEnd, propEnd)
+		scanner.Set(LProperty, propBegin, propEnd, propEnd, propEnd)
 	}
 }
 
-func (parser *LineParser) parseValueCont(bytes []byte, from, to int) {
+func (scanner *LineScanner) parseValueCont(bytes []byte, from, to int) {
 	if isPropValueNext(bytes, from, to) {
-		parser.Set(LPropertyContNext, from, from, from, to-1)
+		scanner.Set(LPropertyContNext, from, from, from, to-1)
 	} else {
-		parser.Set(LPropertyCont, from, from, from, to)
+		scanner.Set(LPropertyCont, from, from, from, to)
 	}
 }
 
