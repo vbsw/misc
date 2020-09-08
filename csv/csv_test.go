@@ -39,8 +39,8 @@ func TestStatsBytes(t *testing.T) {
 	stats := StatsFromBytes(strBytes, header, ";")
 	if len(stats.FieldsNum) != 5 {
 		t.Error(len(stats.FieldsNum), 5)
-	} else if stats.HeaderAvail == false {
-		t.Error(stats.HeaderAvail, true)
+	} else if stats.HeaderAvailable == false {
+		t.Error(stats.HeaderAvailable, true)
 	} else if stats.FieldsNum[0] != 3 {
 		t.Error(stats.FieldsNum[0], 3)
 	} else if stats.FieldsNum[1] != 3 {

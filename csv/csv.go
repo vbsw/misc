@@ -18,25 +18,14 @@ import (
 
 // Stats holds statistics of CSV data.
 type Stats struct {
-	HeaderAvail bool
-	FieldsNum   []int
-	DataAvail   []bool
-}
-
-// ReadFile reads CSV data from file. File must be in UTF-8.
-// Returns CSV data as columns. Index 0 is alwas header. Even, if
-// data has no header it is copied from parameter.
-func ReadFile(path string, header []string, separator string) ([][]string, error) {
-	bytes, err := ioutil.ReadFile(path)
-	if err == nil {
-		return ReadBytes(bytes, header, separator), err
-	}
-	return nil, err
+	HeaderAvailable bool
+	FieldsNum       []int
+	DataAvailable   []bool
 }
 
 // ReadBytes reads CSV data from byte array. Content of byte array must be in UTF-8.
-// Returns CSV data as columns. Index 0 is alwas header. Even, if
-// data has no header it is copied from parameter.
+// Returns CSV data as columns. Index 0 is alwas header, even, if
+// data has no header, it is copied from the parameter.
 func ReadBytes(bytes []byte, header []string, separator string) [][]string {
 	var scanner linescanner.LineScanner
 	var offset int
@@ -70,12 +59,13 @@ func ReadBytes(bytes []byte, header []string, separator string) [][]string {
 	return csvData
 }
 
-// StatsFromFile reads CSV data from file, scans it and returns its CSV data
-// statistics.
-func StatsFromFile(path string, header []string, separator string) (*Stats, error) {
+// ReadFile reads CSV data from file. File must be in UTF-8.
+// Returns CSV data as columns. Index 0 is alwas header, even, if
+// data has no header, it is copied from the parameter.
+func ReadFile(path string, header []string, separator string) ([][]string, error) {
 	bytes, err := ioutil.ReadFile(path)
 	if err == nil {
-		return StatsFromBytes(bytes, header, separator), err
+		return ReadBytes(bytes, header, separator), err
 	}
 	return nil, err
 }
@@ -90,26 +80,36 @@ func StatsFromBytes(bytes []byte, header []string, separator string) *Stats {
 	// seek first line
 	offset = scanner.ScanLine(bytes, sepr, 0)
 	stats.FieldsNum = append(stats.FieldsNum, len(scanner.Begin))
-	stats.DataAvail = append(stats.DataAvail, scanner.Empty)
+	stats.DataAvailable = append(stats.DataAvailable, scanner.Empty)
 	for offset < len(bytes) && scanner.Empty {
 		offset = scanner.ScanLine(bytes, sepr, offset)
 		stats.FieldsNum = append(stats.FieldsNum, len(scanner.Begin))
-		stats.DataAvail = append(stats.DataAvail, scanner.Empty)
+		stats.DataAvailable = append(stats.DataAvailable, scanner.Empty)
 	}
 	// init header
 	_, headerAvailable := columnMapping(bytes, scanner.Begin, scanner.End, header)
-	stats.HeaderAvail = headerAvailable
+	stats.HeaderAvailable = headerAvailable
 	// process data lines
 	for offset < len(bytes) {
 		offset = scanner.ScanLine(bytes, sepr, offset)
 		stats.FieldsNum = append(stats.FieldsNum, len(scanner.Begin))
-		stats.DataAvail = append(stats.DataAvail, scanner.Empty)
+		stats.DataAvailable = append(stats.DataAvailable, scanner.Empty)
 	}
 	if len(bytes) > 0 && (bytes[len(bytes)-1] == '\n' || bytes[len(bytes)-1] == '\r') {
 		stats.FieldsNum = append(stats.FieldsNum, 0)
-		stats.DataAvail = append(stats.DataAvail, true)
+		stats.DataAvailable = append(stats.DataAvailable, true)
 	}
 	return stats
+}
+
+// StatsFromFile reads CSV data from file, scans it and returns its CSV data
+// statistics.
+func StatsFromFile(path string, header []string, separator string) (*Stats, error) {
+	bytes, err := ioutil.ReadFile(path)
+	if err == nil {
+		return StatsFromBytes(bytes, header, separator), err
+	}
+	return nil, err
 }
 
 // WriteFile writes CSV data to file.
@@ -122,7 +122,7 @@ func WriteFile(path string, csvData [][]string, separator string) error {
 	return nil
 }
 
-// ToBytes converts strings to byte array.
+// ToBytes converts CSV data to byte array.
 func ToBytes(csvData [][]string, separator string) []byte {
 	bytes := allocCSVByteBuffer(csvData, separator)
 	if len(bytes) > 0 {
