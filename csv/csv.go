@@ -45,14 +45,22 @@ func ReadBytes(bytes []byte, header []string, separator string) [][]string {
 		}
 	}
 	for i, mapping := range colMap {
-		csvData[i] = append(csvData[i], scanner.FieldValue(bytes, mapping))
+		if mapping >= 0 {
+			csvData[i] = append(csvData[i], scanner.FieldValue(bytes, mapping))
+		} else {
+			csvData[i] = append(csvData[i], "")
+		}
 	}
 	// process data lines
 	for offset < len(bytes) {
 		offset = scanner.ScanLine(bytes, sepr, offset)
 		if !scanner.Empty {
 			for i, mapping := range colMap {
-				csvData[i] = append(csvData[i], scanner.FieldValue(bytes, mapping))
+				if mapping >= 0 {
+					csvData[i] = append(csvData[i], scanner.FieldValue(bytes, mapping))
+				} else {
+					csvData[i] = append(csvData[i], "")
+				}
 			}
 		}
 	}
@@ -155,9 +163,29 @@ func approximatlyRowsNum(bytes []byte, header []string) int {
 func columnMapping(bytes []byte, begin, end []int, header []string) ([]int, bool) {
 	colMap := make([]int, 0, len(header))
 	// column mapping
-	for i := 0; i < len(begin) && i < len(header); i++ {
+	if len(begin) >= len(header) {
+		colMap = columnMappingSupA(bytes, begin, end, colMap, header)
+	} else {
+		colMap = columnMappingSupB(bytes, begin, end, colMap, header)
+	}
+	// default mapping
+	if len(colMap) == 0 {
+		for i := 0; i < len(header); i++ {
+			if i < len(begin) {
+				colMap = append(colMap, i)
+			} else {
+				colMap = append(colMap, -1)
+			}
+		}
+		return colMap, false
+	}
+	return colMap, true
+}
+
+func columnMappingSupA(bytes []byte, begin, end, colMap []int, header []string) []int {
+	for i, columnName := range header {
 		for j := range begin {
-			if isEqual(bytes, begin[j], end[j], header[i]) {
+			if isEqual(bytes, begin[j], end[j], columnName) {
 				colMap = append(colMap, j)
 				break
 			}
@@ -168,14 +196,28 @@ func columnMapping(bytes []byte, begin, end []int, header []string) ([]int, bool
 			break
 		}
 	}
-	// default mapping
-	if len(colMap) == 0 {
-		for i := 0; i < len(begin) && i < len(header); i++ {
-			colMap = append(colMap, i)
+	return colMap
+}
+
+func columnMappingSupB(bytes []byte, begin, end, colMap []int, header []string) []int {
+	var count int
+	for i, columnName := range header {
+		for j := range begin {
+			if isEqual(bytes, begin[j], end[j], columnName) {
+				colMap = append(colMap, j)
+				count++
+				break
+			}
 		}
-		return colMap, false
+		// corresponding column wasn't found
+		if len(colMap) != i+1 {
+			colMap = append(colMap, -1)
+		}
 	}
-	return colMap, true
+	if count != len(begin) {
+		return colMap[:0]
+	}
+	return colMap
 }
 
 func isEqual(bytes []byte, from, to int, str string) bool {

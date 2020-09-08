@@ -52,7 +52,7 @@ func TestStatsBytes(t *testing.T) {
 	}
 }
 
-func TestReadBytes(t *testing.T) {
+func TestReadBytesA(t *testing.T) {
 	str := "a;b;c\n1;2;3\n \n;;\n"
 	header := []string{"a", "b", "c"}
 	strBytes := []byte(str)
@@ -71,6 +71,96 @@ func TestReadBytes(t *testing.T) {
 		t.Error(csvData[1][1], "2")
 	} else if csvData[2][1] != "3" {
 		t.Error(csvData[2][1], "3")
+	}
+}
+
+func TestReadBytesB(t *testing.T) {
+	str := "c;a;b\n3;1;2\n \n;;\n"
+	header := []string{"a", "b", "c"}
+	strBytes := []byte(str)
+	csvData := ReadBytes(strBytes, header, ";")
+	if len(csvData) != 3 {
+		t.Error(len(csvData), 3)
+	} else if len(csvData[0]) != 2 {
+		t.Error(len(csvData[0]), 2)
+	} else if len(csvData[1]) != 2 {
+		t.Error(len(csvData[1]), 2)
+	} else if len(csvData[2]) != 2 {
+		t.Error(len(csvData[2]), 2)
+	} else if csvData[0][1] != "1" {
+		t.Error(csvData[0][1], "1")
+	} else if csvData[1][1] != "2" {
+		t.Error(csvData[1][1], "2")
+	} else if csvData[2][1] != "3" {
+		t.Error(csvData[2][1], "3")
+	}
+}
+
+func TestReadBytesC(t *testing.T) {
+	str := "c;a;b;d;e\n3;1;2\n \n;;\n"
+	header := []string{"a", "b", "c"}
+	strBytes := []byte(str)
+	csvData := ReadBytes(strBytes, header, ";")
+	if len(csvData) != 3 {
+		t.Error(len(csvData), 3)
+	} else if len(csvData[0]) != 2 {
+		t.Error(len(csvData[0]), 2)
+	} else if len(csvData[1]) != 2 {
+		t.Error(len(csvData[1]), 2)
+	} else if len(csvData[2]) != 2 {
+		t.Error(len(csvData[2]), 2)
+	} else if csvData[0][1] != "1" {
+		t.Error(csvData[0][1], "1")
+	} else if csvData[1][1] != "2" {
+		t.Error(csvData[1][1], "2")
+	} else if csvData[2][1] != "3" {
+		t.Error(csvData[2][1], "3")
+	}
+}
+
+func TestReadBytesD(t *testing.T) {
+	str := "c;a\n3;1\n \n;\n"
+	header := []string{"a", "b", "c"}
+	strBytes := []byte(str)
+	csvData := ReadBytes(strBytes, header, ";")
+	if len(csvData) != 3 {
+		t.Error(len(csvData), 3)
+	} else if len(csvData[0]) != 2 {
+		t.Error(len(csvData[0]), 2)
+	} else if len(csvData[1]) != 2 {
+		t.Error(len(csvData[1]), 2)
+	} else if len(csvData[2]) != 2 {
+		t.Error(len(csvData[2]), 2)
+	} else if csvData[0][1] != "1" {
+		t.Error(csvData[0][1], "1")
+	} else if csvData[1][1] != "" {
+		t.Error(csvData[1][1])
+	} else if csvData[2][1] != "3" {
+		t.Error(csvData[2][1], "3")
+	}
+}
+
+func TestReadBytesE(t *testing.T) {
+	str := "1;2;3;4;5\n6;7;8;9\n \n;;\n"
+	header := []string{"a", "b", "c"}
+	strBytes := []byte(str)
+	csvData := ReadBytes(strBytes, header, ";")
+	if len(csvData) != 3 {
+		t.Error(len(csvData), 3)
+	} else if len(csvData[0]) != 3 {
+		t.Error(len(csvData[0]), 3)
+	} else if csvData[0][1] != "1" {
+		t.Error(csvData[0][1], "1")
+	} else if csvData[1][1] != "2" {
+		t.Error(csvData[1][1], "2")
+	} else if csvData[2][1] != "3" {
+		t.Error(csvData[2][1], "3")
+	} else if csvData[0][2] != "6" {
+		t.Error(csvData[0][2], "6")
+	} else if csvData[1][2] != "7" {
+		t.Error(csvData[1][2], "7")
+	} else if csvData[2][2] != "8" {
+		t.Error(csvData[2][2], "8")
 	}
 }
 
