@@ -5,7 +5,7 @@
  *        http://www.boost.org/LICENSE_1_0.txt)
  */
 
-package csv
+package linescanner
 
 func seekLineEnd(bytes []byte, from, to int) (int, int) {
 	for i := from; i < to; i++ {
