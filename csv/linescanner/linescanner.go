@@ -8,8 +8,6 @@
 // Package linescanner provides functions to parse property files of Java Properties File Format.
 package linescanner
 
-import ()
-
 // LineScanner holds indices for fields of a line.
 type LineScanner struct {
 	Begin []int
