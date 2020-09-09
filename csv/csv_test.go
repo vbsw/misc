@@ -13,159 +13,245 @@ import (
 	"testing"
 )
 
-func TestToBytes(t *testing.T) {
-	nl, nlStr := newLine(runtime.GOOS)
-	csvData := [][]string{{"1001", "2002"}, {"alice", "bob"}}
-	totalLen := 16 + 2 + len(nl)*2
-	lnA := csvData[0][0] + ";" + csvData[1][0]
-	lnB := csvData[0][1] + ";" + csvData[1][1]
-	bytes := ToBytes(csvData, ";")
-	str := strings.Split(string(bytes), nl)
-	if len(bytes) != totalLen {
-		t.Error(len(bytes))
-	} else if len(str) != 3 {
-		t.Error(len(str), strings.ReplaceAll(string(bytes), nl, nlStr))
-	} else if str[0] != lnA {
-		t.Error(str[0], lnA)
-	} else if str[1] != lnB {
-		t.Error(str[1], lnB)
+func TestAppend(t *testing.T) {
+	header := []string{"a", "b", "c"}
+	separator := ";"
+	csvData := New(header, separator)
+
+	if csvData.Size() != 0 {
+		t.Error(csvData.Size(), 0)
+	}
+
+	csvData.Append("1", "2")
+	if csvData.Size() != 1 {
+		t.Error(csvData.Size(), 1)
+	} else if csvData.Value(0, 0) != "1" {
+		t.Error(csvData.Value(0, 0), "1")
+	} else if csvData.Value(0, 2) != "" {
+		t.Error(csvData.Value(0, 2))
+	}
+
+	csvData.Append("3", "", "4")
+	if csvData.Size() != 2 {
+		t.Error(csvData.Size(), 2)
+	} else if csvData.Value(1, 0) != "3" {
+		t.Error(csvData.Value(1, 0), "3")
+	} else if csvData.Value(1, 2) != "4" {
+		t.Error(csvData.Value(1, 2), "4")
 	}
 }
 
-func TestStatsBytes(t *testing.T) {
-	str := "a;b;c\n1;2;3\n \n4;5\n"
+func TestInsert(t *testing.T) {
 	header := []string{"a", "b", "c"}
-	strBytes := []byte(str)
-	stats := StatsFromBytes(strBytes, header, ";")
-	if len(stats.FieldsNum) != 5 {
-		t.Error(len(stats.FieldsNum), 5)
-	} else if stats.HeaderAvailable == false {
-		t.Error(stats.HeaderAvailable, true)
-	} else if stats.FieldsNum[0] != 3 {
-		t.Error(stats.FieldsNum[0], 3)
-	} else if stats.FieldsNum[1] != 3 {
-		t.Error(stats.FieldsNum[1], 3)
-	} else if stats.FieldsNum[2] != 0 {
-		t.Error(stats.FieldsNum[2], 0)
-	} else if stats.FieldsNum[3] != 2 {
-		t.Error(stats.FieldsNum[3], 2)
+	separator := ";"
+	csvData := New(header, separator)
+
+	if csvData.Size() != 0 {
+		t.Error(csvData.Size(), 0)
+	}
+
+	csvData.Insert(0, "1", "2")
+	if csvData.Size() != 1 {
+		t.Error(csvData.Size(), 1)
+	} else if csvData.Value(0, 0) != "1" {
+		t.Error(csvData.Value(0, 0), "1")
+	} else if csvData.Value(0, 2) != "" {
+		t.Error(csvData.Value(0, 2))
+	}
+
+	csvData.Insert(0, "3", "", "4")
+	if csvData.Size() != 2 {
+		t.Error(csvData.Size(), 2)
+	} else if csvData.Value(0, 0) != "3" {
+		t.Error(csvData.Value(0, 0), "3")
+	} else if csvData.Value(0, 2) != "4" {
+		t.Error(csvData.Value(0, 2), "4")
+	} else if csvData.Value(1, 0) != "1" {
+		t.Error(csvData.Value(1, 0), "1")
+	} else if csvData.Value(1, 2) != "" {
+		t.Error(csvData.Value(1, 2))
+	}
+}
+
+func TestBytes(t *testing.T) {
+	header := []string{"alice", "bob"}
+	separator := ";"
+	nl, nlStr := newLine()
+	csvData := New(header, separator)
+	csvData.Append("1001", "1002")
+	csvData.Append("2001", "2002")
+
+	strOrig := "alice;bob" + nl + "1001;1002" + nl + "2001;2002" + nl
+	str := string(csvData.Bytes(true))
+
+	if str != strOrig {
+		t.Error(strings.ReplaceAll(string(str), nl, nlStr))
+	}
+}
+
+func TestHeaderMappingA(t *testing.T) {
+	header := []string{"alice", "bob"}
+	separator := ";"
+	nl, _ := newLine()
+	strOrig := "alice;bob" + nl
+	csvData := New(header, separator)
+
+	mapping, isData := csvData.headerMapping([]byte(strOrig), []int{0, 6}, []int{5, 9})
+	if isData != false {
+		t.Error(isData, false)
+	} else if len(mapping) != 2 {
+		t.Error(len(mapping), 2)
+	} else if mapping[0] != 0 {
+		t.Error(mapping[0], 0)
+	} else if mapping[1] != 1 {
+		t.Error(mapping[1], 1)
+	}
+}
+
+func TestHeaderMappingB(t *testing.T) {
+	header := []string{"alice", "bob", "claire"}
+	separator := ";"
+	nl, _ := newLine()
+	strOrig := "alice;bob" + nl
+	csvData := New(header, separator)
+
+	mapping, isData := csvData.headerMapping([]byte(strOrig), []int{0, 6}, []int{5, 9})
+	if isData != false {
+		t.Error(isData, false)
+	} else if len(mapping) != 3 {
+		t.Error(len(mapping), 3)
+	} else if mapping[0] != 0 {
+		t.Error(mapping[0], 0)
+	} else if mapping[1] != 1 {
+		t.Error(mapping[1], 1)
+	} else if mapping[2] >= 0 && mapping[2] < 2 {
+		t.Error(mapping[2])
+	}
+}
+
+func TestHeaderMappingC(t *testing.T) {
+	header := []string{"aliceX", "bobX", "claireX"}
+	separator := ";"
+	nl, _ := newLine()
+	strOrig := "alice;bob" + nl
+	csvData := New(header, separator)
+
+	mapping, isData := csvData.headerMapping([]byte(strOrig), []int{0, 6}, []int{5, 9})
+	if isData != true {
+		t.Error(isData, true)
+	} else if len(mapping) != 3 {
+		t.Error(len(mapping), 3)
+	} else if mapping[0] != 0 {
+		t.Error(mapping[0], 0)
+	} else if mapping[1] != 1 {
+		t.Error(mapping[1], 1)
+	} else if mapping[2] >= 0 && mapping[2] < 2 {
+		t.Error(mapping[2])
 	}
 }
 
 func TestReadBytesA(t *testing.T) {
-	str := "a;b;c\n1;2;3\n \n;;\n"
-	header := []string{"a", "b", "c"}
-	strBytes := []byte(str)
-	csvData := ReadBytes(strBytes, header, ";")
-	if len(csvData) != 3 {
-		t.Error(len(csvData), 3)
-	} else if len(csvData[0]) != 2 {
-		t.Error(len(csvData[0]), 2)
-	} else if len(csvData[1]) != 2 {
-		t.Error(len(csvData[1]), 2)
-	} else if len(csvData[2]) != 2 {
-		t.Error(len(csvData[2]), 2)
-	} else if csvData[0][1] != "1" {
-		t.Error(csvData[0][1], "1")
-	} else if csvData[1][1] != "2" {
-		t.Error(csvData[1][1], "2")
-	} else if csvData[2][1] != "3" {
-		t.Error(csvData[2][1], "3")
+	header := []string{"alice", "bob"}
+	separator := ";"
+	nl, _ := newLine()
+	strOrig := "alice;bob" + nl + "1001;1002" + nl + "2001;2002" + nl
+	csvData := New(header, separator)
+
+	csvData.ReadBytes([]byte(strOrig))
+	if csvData.Size() != 2 || len(csvData.Columns) != 2 {
+		t.Error(csvData.Size(), len(csvData.Columns), 2, 2)
+	} else if csvData.Value(0, 0) != "1001" {
+		t.Error(csvData.Value(0, 0), "1001")
+	} else if csvData.Value(0, 1) != "1002" {
+		t.Error(csvData.Value(0, 1), "1002")
+	} else if csvData.Value(1, 0) != "2001" {
+		t.Error(csvData.Value(1, 0), "2001")
+	} else if csvData.Value(1, 1) != "2002" {
+		t.Error(csvData.Value(1, 1), "2002")
+	} else if csvData.LineNumbers[0] != 2 {
+		t.Error(csvData.LineNumbers[0], 2)
+	} else if csvData.LineNumbers[1] != 3 {
+		t.Error(csvData.LineNumbers[1], 3)
 	}
 }
 
 func TestReadBytesB(t *testing.T) {
-	str := "c;a;b\n3;1;2\n \n;;\n"
-	header := []string{"a", "b", "c"}
-	strBytes := []byte(str)
-	csvData := ReadBytes(strBytes, header, ";")
-	if len(csvData) != 3 {
-		t.Error(len(csvData), 3)
-	} else if len(csvData[0]) != 2 {
-		t.Error(len(csvData[0]), 2)
-	} else if len(csvData[1]) != 2 {
-		t.Error(len(csvData[1]), 2)
-	} else if len(csvData[2]) != 2 {
-		t.Error(len(csvData[2]), 2)
-	} else if csvData[0][1] != "1" {
-		t.Error(csvData[0][1], "1")
-	} else if csvData[1][1] != "2" {
-		t.Error(csvData[1][1], "2")
-	} else if csvData[2][1] != "3" {
-		t.Error(csvData[2][1], "3")
+	header := []string{"alice", "bob"}
+	separator := ";"
+	nl, _ := newLine()
+	strOrig := "bob;alice" + nl + "1002;1001" + nl + "2002;2001" + nl
+	csvData := New(header, separator)
+
+	csvData.ReadBytes([]byte(strOrig))
+	if csvData.Size() != 2 || len(csvData.Columns) != 2 {
+		t.Error(csvData.Size(), len(csvData.Columns), 2, 2)
+	} else if csvData.Value(0, 0) != "1001" {
+		t.Error(csvData.Value(0, 0), "1001")
+	} else if csvData.Value(0, 1) != "1002" {
+		t.Error(csvData.Value(0, 1), "1002")
+	} else if csvData.Value(1, 0) != "2001" {
+		t.Error(csvData.Value(1, 0), "2001")
+	} else if csvData.Value(1, 1) != "2002" {
+		t.Error(csvData.Value(1, 1), "2002")
+	} else if csvData.LineNumbers[0] != 2 {
+		t.Error(csvData.LineNumbers[0], 2)
+	} else if csvData.LineNumbers[1] != 3 {
+		t.Error(csvData.LineNumbers[1], 3)
 	}
 }
 
 func TestReadBytesC(t *testing.T) {
-	str := "c;a;b;d;e\n3;1;2\n \n;;\n"
-	header := []string{"a", "b", "c"}
-	strBytes := []byte(str)
-	csvData := ReadBytes(strBytes, header, ";")
-	if len(csvData) != 3 {
-		t.Error(len(csvData), 3)
-	} else if len(csvData[0]) != 2 {
-		t.Error(len(csvData[0]), 2)
-	} else if len(csvData[1]) != 2 {
-		t.Error(len(csvData[1]), 2)
-	} else if len(csvData[2]) != 2 {
-		t.Error(len(csvData[2]), 2)
-	} else if csvData[0][1] != "1" {
-		t.Error(csvData[0][1], "1")
-	} else if csvData[1][1] != "2" {
-		t.Error(csvData[1][1], "2")
-	} else if csvData[2][1] != "3" {
-		t.Error(csvData[2][1], "3")
+	header := []string{"alice", "bob"}
+	separator := ";"
+	nl, _ := newLine()
+	strOrig := nl + nl + "alice;bob" + nl + ";" + nl + "1001;1002" + nl + "2001;2002" + nl
+	csvData := New(header, separator)
+
+	csvData.ReadBytes([]byte(strOrig))
+	if csvData.Size() != 2 || len(csvData.Columns) != 2 {
+		t.Error(csvData.Size(), len(csvData.Columns), 2, 2)
+	} else if csvData.Value(0, 0) != "1001" {
+		t.Error(csvData.Value(0, 0), "1001")
+	} else if csvData.Value(0, 1) != "1002" {
+		t.Error(csvData.Value(0, 1), "1002")
+	} else if csvData.Value(1, 0) != "2001" {
+		t.Error(csvData.Value(1, 0), "2001")
+	} else if csvData.Value(1, 1) != "2002" {
+		t.Error(csvData.Value(1, 1), "2002")
+	} else if csvData.LineNumbers[0] != 5 {
+		t.Error(csvData.LineNumbers[0], 5)
+	} else if csvData.LineNumbers[1] != 6 {
+		t.Error(csvData.LineNumbers[1], 6)
 	}
 }
 
 func TestReadBytesD(t *testing.T) {
-	str := "c;a\n3;1\n \n;\n"
-	header := []string{"a", "b", "c"}
-	strBytes := []byte(str)
-	csvData := ReadBytes(strBytes, header, ";")
-	if len(csvData) != 3 {
-		t.Error(len(csvData), 3)
-	} else if len(csvData[0]) != 2 {
-		t.Error(len(csvData[0]), 2)
-	} else if len(csvData[1]) != 2 {
-		t.Error(len(csvData[1]), 2)
-	} else if len(csvData[2]) != 2 {
-		t.Error(len(csvData[2]), 2)
-	} else if csvData[0][1] != "1" {
-		t.Error(csvData[0][1], "1")
-	} else if csvData[1][1] != "" {
-		t.Error(csvData[1][1])
-	} else if csvData[2][1] != "3" {
-		t.Error(csvData[2][1], "3")
+	header := []string{"alice", "bob", "clair"}
+	separator := ";"
+	nl, _ := newLine()
+	strOrig := "bob;alice" + nl + "1002;1001" + nl + "2002;2001" + nl
+	csvData := New(header, separator)
+
+	csvData.ReadBytes([]byte(strOrig))
+	if csvData.Size() != 2 || len(csvData.Columns) != 3 {
+		t.Error(csvData.Size(), len(csvData.Columns), 2, 3)
+	} else if csvData.Value(0, 0) != "1001" {
+		t.Error(csvData.Value(0, 0), "1001")
+	} else if csvData.Value(0, 1) != "1002" {
+		t.Error(csvData.Value(0, 1), "1002")
+	} else if csvData.Value(0, 2) != "" {
+		t.Error(csvData.Value(0, 2), "")
+	} else if csvData.Value(1, 0) != "2001" {
+		t.Error(csvData.Value(1, 0), "2001")
+	} else if csvData.Value(1, 1) != "2002" {
+		t.Error(csvData.Value(1, 1), "2002")
+	} else if csvData.Value(1, 2) != "" {
+		t.Error(csvData.Value(1, 2), "")
 	}
 }
 
-func TestReadBytesE(t *testing.T) {
-	str := "1;2;3;4;5\n6;7;8;9\n \n;;\n"
-	header := []string{"a", "b", "c"}
-	strBytes := []byte(str)
-	csvData := ReadBytes(strBytes, header, ";")
-	if len(csvData) != 3 {
-		t.Error(len(csvData), 3)
-	} else if len(csvData[0]) != 3 {
-		t.Error(len(csvData[0]), 3)
-	} else if csvData[0][1] != "1" {
-		t.Error(csvData[0][1], "1")
-	} else if csvData[1][1] != "2" {
-		t.Error(csvData[1][1], "2")
-	} else if csvData[2][1] != "3" {
-		t.Error(csvData[2][1], "3")
-	} else if csvData[0][2] != "6" {
-		t.Error(csvData[0][2], "6")
-	} else if csvData[1][2] != "7" {
-		t.Error(csvData[1][2], "7")
-	} else if csvData[2][2] != "8" {
-		t.Error(csvData[2][2], "8")
-	}
-}
-
-func newLine(operatingSystem string) (string, string) {
-	if operatingSystem == "windows" {
+func newLine() (string, string) {
+	if runtime.GOOS == "windows" {
 		return "\r\n", "\\r\\n"
 	}
 	return "\n", "\\n"

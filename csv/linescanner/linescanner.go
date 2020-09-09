@@ -41,5 +41,8 @@ func (scanner *LineScanner) ScanLine(bytes, separator []byte, offset int) int {
 
 // FieldValue returns field value as string.
 func (scanner *LineScanner) FieldValue(bytes []byte, index int) string {
-	return string(bytes[scanner.Begin[index]:scanner.End[index]])
+	if index >= 0 && index < len(scanner.Begin) {
+		return string(bytes[scanner.Begin[index]:scanner.End[index]])
+	}
+	return ""
 }
