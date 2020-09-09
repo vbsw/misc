@@ -15,13 +15,14 @@ This package provides functions to read and write CSV. It is published on <https
 	)
 
 	func main() {
-		columns := []string{"id", "name"}
-		csvData, err := csv.ReadFile("some/path/to/file", columns)
+		header := []string{"id", "name"}
+		csvData := csv.New(header, ";")
+		err := csvData.ReadFile("some/path/to/file")
 
-		if err == nil && len(csvData) > 1 {
-			for i := 0; i < len(csvData[0]); i++ {
-				id := csvData[0][i]
-				name := csvData[1][i]
+		if err == nil && csvData.Size() > 0 {
+			for i := 0; i < csvData.Size(); i++ {
+				id := csvData.Value(i, 0)
+				name := csvData.Value(i, 1)
 				fmt.Println(id, name)
 			}
 		}
