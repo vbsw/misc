@@ -1,0 +1,6 @@
+github.com/vbsw/misc/files v0.2.0 h1:eoJRglpkC0EkCBZZ1lYLE+C32mzMMw5y38ZhAdnyypM=
+github.com/vbsw/misc/files v0.2.0/go.mod h1:Hb5caXtRPAYA4/c68oHD5hnuGVOIvLL7gVfBplwGU+A=
+github.com/vbsw/misc/properties/linescanner v0.2.0 h1:o64Wmtojbs8vm27B3oKhaoq3Y0lEPlbNXE8v8g2C0P8=
+github.com/vbsw/misc/properties/linescanner v0.2.0/go.mod h1:qF07WZmRmFRLDyZuUm+tHPwr9IWuosHq4ND1ykkrdfk=
+github.com/vbsw/misc/ref v0.2.0 h1:Ro5tNogHnlsqO5lBcbBmi2y6C0D0h17NSzwwNZ40epg=
+github.com/vbsw/misc/ref v0.2.0/go.mod h1:wWLkk633VkE7+jNDAr6mef1RK+Pssy+Bz4n7FnqAulk=
