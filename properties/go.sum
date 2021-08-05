@@ -1,0 +1,6 @@
+github.com/vbsw/misc/files v0.0.0-20200914191847-68c8f9ed8097 h1:15yEG/Y6y4dTh0I6GMyVGj2YN7+Ci7p5o2V4CuADZCc=
+github.com/vbsw/misc/files v0.0.0-20200914191847-68c8f9ed8097/go.mod h1:Hb5caXtRPAYA4/c68oHD5hnuGVOIvLL7gVfBplwGU+A=
+github.com/vbsw/misc/properties/linescanner v0.0.0-20200914191847-68c8f9ed8097 h1:qNMoxYYtmxXoOh9r48FnAWI5YoUZNdT6nSs3mZMq2ek=
+github.com/vbsw/misc/properties/linescanner v0.0.0-20200914191847-68c8f9ed8097/go.mod h1:RVenopio7NTHg6Uqe/v5teJgyNDIFYmg8nW6t448EGM=
+github.com/vbsw/misc/ref v0.0.0-20200914191847-68c8f9ed8097 h1:YFaNhpLOix9KksnKQyedFjuFtPTh40isj5uwJi+T4Ik=
+github.com/vbsw/misc/ref v0.0.0-20200914191847-68c8f9ed8097/go.mod h1:wWLkk633VkE7+jNDAr6mef1RK+Pssy+Bz4n7FnqAulk=
