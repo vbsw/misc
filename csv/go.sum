@@ -1,0 +1,10 @@
+github.com/vbsw/misc/csv/linescanner v0.2.0 h1:Q2crag1T9FreOChUD7cL8HM1IO5xU5ml9FjMwfI76Ik=
+github.com/vbsw/misc/csv/linescanner v0.2.0/go.mod h1:luz/6UNOzaK+hIFj+ciuXXHTv80DFvZMxW2Q4CUplbM=
+github.com/vbsw/misc/files v0.2.0 h1:eoJRglpkC0EkCBZZ1lYLE+C32mzMMw5y38ZhAdnyypM=
+github.com/vbsw/misc/files v0.2.0/go.mod h1:Hb5caXtRPAYA4/c68oHD5hnuGVOIvLL7gVfBplwGU+A=
+github.com/vbsw/misc/insert v0.2.0 h1:SxHFaSV9a6S3BozgRi1hq3owv9k+OS90WjYX09Pu1qc=
+github.com/vbsw/misc/insert v0.2.0/go.mod h1:tP+E6bSgdNlW2nahHhB0XjxFXcOuAQ7SKgxzRGEYDMI=
+github.com/vbsw/misc/ref v0.2.0 h1:Ro5tNogHnlsqO5lBcbBmi2y6C0D0h17NSzwwNZ40epg=
+github.com/vbsw/misc/ref v0.2.0/go.mod h1:wWLkk633VkE7+jNDAr6mef1RK+Pssy+Bz4n7FnqAulk=
+github.com/vbsw/misc/remove v0.2.0 h1:YGJs/N+6j2n3CsHi7HE5TdJL5xRKNzpR8m55jUXk+XU=
+github.com/vbsw/misc/remove v0.2.0/go.mod h1:8Y5PzF/fTnS/7QzIdDFB6T//nNnAoYsbavDjn9Aw2RY=
